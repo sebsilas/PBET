@@ -29,7 +29,7 @@ PBET <- function(aws_credentials,
                  admin_password = "demo",
                  SNR_test = TRUE,
                  get_range = TRUE,
-                 absolute_url,
+                 absolute_url = "https://adaptiveeartraining.com",
                  examples = 2,
                  final_results = TRUE
 ) {
@@ -45,7 +45,7 @@ PBET <- function(aws_credentials,
                            PBET_intro(aws_credentials, demo, SNR_test, get_range, absolute_url = absolute_url),
 
                            # long tone trials
-                           musicassessr::long_tone_trials(num_items$find_the_note, num_examples = examples, feedback = feedback),
+                           musicassessr::find_this_note_trials(num_items$find_the_note, num_examples = examples, feedback = feedback, page_type = "reactive"),
 
                            # arrhythmic
                            musicassessr::arrhythmic_melody_trials(item_bank = item_bank,
@@ -114,7 +114,8 @@ PBET_intro <- function(aws_credentials = list("api_url" = "api url",
                                                                                              destination_bucket = aws_credentials$destination_bucket)),
                                 button_text = psychTestR::i18n("Next")),
 
-    musicassessr::setup_pages(input = "midi_keyboard_or_microphone", demo = demo, get_instrument_range = get_range, SNR_test = SNR_test, absolute_url = absolute_url),
+    musicassessr::setup_pages(input = "midi_keyboard_or_microphone", demo = demo, get_instrument_range = get_range,
+                              SNR_test = SNR_test, absolute_url = absolute_url, select_instrument = TRUE),
     # instructions
     PBET_instructions()
   )
@@ -124,12 +125,14 @@ PBET_intro <- function(aws_credentials = list("api_url" = "api url",
 PBET_instructions <- function() {
 
   c(
-    psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("test_instructions_1.1")),
+    psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$h2("Instructions"),
+                                                       shiny::tags$p(psychTestR::i18n("test_instructions_1.1")),
                                                        shiny::tags$p(psychTestR::i18n("test_instructions_1.2"))),
                                 button_text = psychTestR::i18n("Next")),
 
-    psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("test_instructions_2.1")),
-                                                       shiny::tags$p(psychTestR::i18n("	test_instructions_2.2"))),
+    psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$h2("Instructions"),
+                                                       shiny::tags$p(psychTestR::i18n("test_instructions_2.1")),
+                                                       shiny::tags$p(psychTestR::i18n("test_instructions_2.2"))),
                                 button_text = psychTestR::i18n("Next"))
   )
 
