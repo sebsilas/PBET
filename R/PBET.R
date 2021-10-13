@@ -31,8 +31,7 @@ PBET <- function(aws_credentials,
                  get_range = TRUE,
                  absolute_url = "https://adaptiveeartraining.com",
                  examples = 2,
-                 final_results = TRUE
-) {
+                 final_results = TRUE) {
 
   if(demo) warning('Running PBET in demo mode!')
 
