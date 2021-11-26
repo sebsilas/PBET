@@ -5,8 +5,10 @@
 \title{Deploy the PBET}
 \usage{
 PBET(
-  aws_credentials,
-  num_items = list(find_the_note = 6L, arrhythmic = 10L, rhythmic = 10L),
+  num_items = list(find_the_note = 6L, arrhythmic = list(key_easy = 5L, key_hard = 5L),
+    rhythmic = list(key_easy = 5L, key_hard = 5L), wjd_audio = list(key_easy = 5L,
+    key_hard = 5L)),
+  melody_length = 3:15,
   item_bank = itembankr::WJD,
   demographics = TRUE,
   demo = FALSE,
@@ -14,13 +16,16 @@ PBET(
   admin_password = "demo",
   SNR_test = TRUE,
   get_range = TRUE,
-  absolute_url,
-  examples = 2,
-  final_results = TRUE
+  absolute_url = "https://adaptiveeartraining.com",
+  examples = list(easy = 1L, hard = 1L),
+  final_results = TRUE,
+  musicassessr_state = "production",
+  item_characteristics_sampler_function = item_characteristics_sampler_pbet,
+  get_trial_characteristics_function = get_trial_characteristics_pbet
 )
 }
 \arguments{
-\item{final_results}{}
+\item{get_trial_characteristics_function}{}
 }
 \value{
 
