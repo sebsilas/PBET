@@ -58,15 +58,17 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                     item_characteristics_sampler_function,
                     get_trial_characteristics_function)
 
+
   # run the test
   psychTestR::make_test(
     elts = timeline,
-    opt = psychTestR::test_options(title = "PBET",
+    opt = psychTestR::test_options(title = "Playing By Ear Test",
                                    admin_password = admin_password,
                                    display = psychTestR::display_options(
                                      left_margin = 1L,
                                      right_margin = 1L,
-                                     css = system.file('www/css/style.css', package = "musicassessr")
+                                     css = system.file('www/css/style.css', package = "musicassessr"),
+                                     musicassessr::musicassessr_js(musicassessr_state)
                                    ),
                                    languages = c("en")
     ))
@@ -222,18 +224,6 @@ PBET <- function(num_items = list("interval_perception" = 24L,
     psychTestR::final_page("You have completed the Playing By Ear Test!")
   )
 
-  # run the test
-  psychTestR::make_test(
-    elts = timeline,
-    opt = psychTestR::test_options(title = "Playing By Ear Test",
-                                   admin_password = admin_password,
-                                   display = psychTestR::display_options(
-                                     left_margin = 1L,
-                                     right_margin = 1L,
-                                     css = system.file('www/css/style.css', package = "musicassessr")
-                                   ),
-                                   languages = c("en")
-    ))
 }
 
 PBET_intro <- function(demo = FALSE,
@@ -251,7 +241,6 @@ PBET_intro <- function(demo = FALSE,
                                                        shiny::tags$img(src = 'custom-assets/img/saxophone.png', height = 100, width = 100),
                                                        shiny::tags$p(psychTestR::i18n("PBET_welcome_1")),
                                                        shiny::tags$p(psychTestR::i18n("PBET_welcome_2")),
-                                                       musicassessr::musicassessr_js_scripts(musicassessr_state = musicassessr_state),
                                 button_text = psychTestR::i18n("Next"))),
 
     musicassessr::setup_pages(input = "midi_keyboard_or_microphone", demo = demo, get_instrument_range = get_range,
