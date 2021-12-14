@@ -1,3 +1,76 @@
+
+
+#' Deploy the PBET as a standalone test
+#'
+#' @param num_items
+#' @param melody_length
+#' @param item_bank
+#' @param demographics
+#' @param demo
+#' @param feedback
+#' @param admin_password
+#' @param SNR_test
+#' @param get_range
+#' @param absolute_url
+#' @param examples
+#' @param final_results
+#' @param musicassessr_state
+#' @param item_characteristics_sampler_function
+#' @param get_trial_characteristics_function
+#'
+#' @return
+#' @export
+#'
+#' @examples
+PBET_standalone <- function(num_items = list("interval_perception" = 24L,
+                                             "find_the_note" = 6L,
+                                             "arrhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
+                                             "rhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
+                                             "wjd_audio" = list("key_easy" = 5L, "key_hard" = 5L)),
+                            melody_length = 3:15,
+                            item_bank = itembankr::WJD,
+                            demographics = TRUE,
+                            demo = FALSE,
+                            feedback = FALSE,
+                            admin_password = "demo",
+                            SNR_test = TRUE,
+                            get_range = TRUE,
+                            absolute_url = "https://adaptiveeartraining.com",
+                            examples = list("easy" = 1L, "hard" = 1L),
+                            final_results = TRUE,
+                            musicassessr_state = "production",
+                            item_characteristics_sampler_function = item_characteristics_sampler_pbet,
+                            get_trial_characteristics_function = get_trial_characteristics_pbet) {
+
+  timeline <- PBET(num_items,
+                   melody_length,
+                    item_bank,
+                    demographics,
+                    demo,
+                    feedback,
+                    admin_password,
+                    SNR_test,
+                    get_range,
+                    absolute_url,
+                    examples,
+                    final_results,
+                    musicassessr_state,
+                    item_characteristics_sampler_function,
+                    get_trial_characteristics_function)
+
+  # run the test
+  psychTestR::make_test(
+    elts = timeline,
+    opt = psychTestR::test_options(title = "PBET",
+                                   admin_password = admin_password,
+                                   display = psychTestR::display_options(
+                                     left_margin = 1L,
+                                     right_margin = 1L,
+                                     css = system.file('www/css/style.css', package = "musicassessr")
+                                   ),
+                                   languages = c("en")
+    ))
+}
 #' Deploy the PBET
 #'
 #' @param num_items
@@ -20,7 +93,8 @@
 #' @export
 #'
 #' @examples
-PBET <- function(num_items = list("find_the_note" = 6L,
+PBET <- function(num_items = list("interval_perception" = 24L,
+                                  "find_the_note" = 6L,
                                   "arrhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
                                   "rhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
                                   "wjd_audio" = list("key_easy" = 5L, "key_hard" = 5L)),
@@ -54,6 +128,8 @@ PBET <- function(num_items = list("find_the_note" = 6L,
 
                            PBET_intro(demo, SNR_test, get_range, absolute_url = absolute_url, musicassessr_state = musicassessr_state),
 
+                           # interval perception
+                           musicassessr::multi_interval_page(num_items$interval_perception),
 
                            # arrhythmic
                            psychTestR::conditional(test = function(state, ...) {
@@ -123,14 +199,14 @@ PBET <- function(num_items = list("find_the_note" = 6L,
 
 
                            # find that note trials
-                           # musicassessr::find_this_note_trials(num_items$find_the_note, num_examples = examples,
-                           #                                     feedback = feedback, page_type = "reactive"),
-                           #
+                           musicassessr::find_this_note_trials(num_items$find_the_note, num_examples = examples,
+                                                               feedback = feedback, page_type = "reactive"),
+
                            # wjd trials
-                           # musicassessr::wjd_audio_melody_trials(item_bank = item_bank("phrases"),
-                           #                                      num_items = num_items$wjd_audio,
-                           #                                      num_examples = examples,
-                           #                                      feedback = feedback),
+                           musicassessr::wjd_audio_melody_trials(item_bank = item_bank("phrases"),
+                                                                num_items = num_items$wjd_audio,
+                                                                num_examples = examples,
+                                                                feedback = feedback),
 
                            psychTestR::elt_save_results_to_disk(complete = FALSE),
 
