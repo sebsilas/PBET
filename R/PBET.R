@@ -1,5 +1,7 @@
 
 
+
+
 #' Deploy the PBET as a standalone test
 #'
 #' @param num_items
@@ -17,18 +19,37 @@
 #' @param musicassessr_state
 #' @param item_characteristics_sampler_function
 #' @param get_trial_characteristics_function
+#' @param max_goes_forced
+#' @param max_goes
+#' @param local_app_file_dir
+#' @param sonic_annotator_local_location
+#' @param test_username
+#' @param store_results_in_db
+#' @param get_answer_midi
+#' @param get_answer_audio
+#' @param give_first_melody_note
+#' @param with_final_page
+#' @param show_socials
+#' @param gold_msi
+#' @param headphones_test
+#' @param get_user_info
+#' @param microphone_test
+#' @param copy_audio_to_location
 #'
 #' @return
 #' @export
 #'
 #' @examples
 PBET_standalone <- function(num_items = list("interval_perception" = 24L,
-                                             "find_the_note" = 6L,
-                                             "arrhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
-                                             "rhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
-                                             "wjd_audio" = list("key_easy" = 5L, "key_hard" = 5L)),
+                                             "find_this_note" = 6L,
+                                             "arrhythmic" = list("key_easy" = 5L,
+                                                                 "key_hard" = 5L),
+                                             "rhythmic" = list("key_easy" = 5L,
+                                                               "key_hard" = 5L),
+                                             "wjd_audio" = list("key_easy" = 5L,
+                                                                "key_hard" = 5L)),
                             melody_length = 3:15,
-                            item_bank = itembankr::WJD,
+                            item_bank = WJD::WJD,
                             demographics = TRUE,
                             demo = FALSE,
                             feedback = FALSE,
@@ -36,11 +57,33 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                             SNR_test = TRUE,
                             get_range = TRUE,
                             absolute_url = "https://adaptiveeartraining.com",
-                            examples = list("easy" = 1L, "hard" = 1L),
+                            examples = list(
+                              "find_this_note" = 2L,
+                              "arrhythmic" = list("easy" = 1L, "hard" = 1L),
+                              "rhythmic" = list("easy" = 1L, "hard" = 1L),
+                              "wjd_audio" = 0L
+                            ),
                             final_results = TRUE,
                             musicassessr_state = "production",
                             item_characteristics_sampler_function = item_characteristics_sampler_pbet,
-                            get_trial_characteristics_function = get_trial_characteristics_pbet) {
+                            get_trial_characteristics_function = get_trial_characteristics_pbet,
+                            max_goes_forced = FALSE,
+                            max_goes = 3L,
+                            local_app_file_dir = '/Users/sebsilas/aws-musicassessr-local-file-upload/files/',
+                            sonic_annotator_local_location = '/Users/sebsilas/sonic-annotator',
+                            test_username = character(),
+                            store_results_in_db = FALSE,
+                            get_answer_midi = musicassessr::get_answer_midi_melodic_production,
+                            get_answer_audio = musicassessr::get_answer_pyin_melodic_production,
+                            give_first_melody_note = TRUE,
+                            with_final_page = TRUE,
+                            show_socials = TRUE,
+                            gold_msi = TRUE,
+                            headphones_test = TRUE,
+                            get_user_info = TRUE,
+                            microphone_test = TRUE,
+                            copy_audio_to_location = NULL) {
+
 
   timeline <- PBET(num_items,
                    melody_length,
@@ -56,7 +99,23 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                     final_results,
                     musicassessr_state,
                     item_characteristics_sampler_function,
-                    get_trial_characteristics_function)
+                    get_trial_characteristics_function,
+                    max_goes_forced,
+                    max_goes,
+                    local_app_file_dir,
+                   sonic_annotator_local_location,
+                    test_username,
+                    store_results_in_db,
+                   get_answer_midi,
+                   get_answer_audio,
+                   give_first_melody_note,
+                   with_final_page,
+                   show_socials,
+                   gold_msi,
+                   headphones_test,
+                   get_user_info,
+                   microphone_test,
+                   copy_audio_to_location)
 
 
   # run the test
@@ -65,14 +124,26 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
     opt = psychTestR::test_options(title = "Playing By Ear Test",
                                    admin_password = admin_password,
                                    display = psychTestR::display_options(
-                                     left_margin = 1L,
+                                    left_margin = 1L,
                                      right_margin = 1L,
-                                     css = system.file('www/css/style.css', package = "musicassessr"),
-                                     musicassessr::musicassessr_js(musicassessr_state)
-                                   ),
-                                   languages = c("en")
-    ))
+                                     css = system.file('www/css/style.css', package = "musicassessr")
+                                    ),
+                                     additional_scripts = musicassessr::musicassessr_js(state = musicassessr_state,
+                                                                                        visual_notation = TRUE),
+                                   languages = c("en")))
 }
+
+
+
+
+
+
+
+
+
+
+
+
 #' Deploy the PBET
 #'
 #' @param num_items
@@ -90,18 +161,34 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 #' @param musicassessr_state
 #' @param item_characteristics_sampler_function
 #' @param get_trial_characteristics_function
+#' @param max_goes_forced
+#' @param max_goes
+#' @param local_app_file_dir
+#' @param sonic_annotator_local_location
+#' @param test_username
+#' @param store_results_in_db
+#' @param get_answer_midi
+#' @param get_answer_audio
+#' @param give_first_melody_note
+#' @param with_final_page
+#' @param show_socials
+#' @param gold_msi
+#' @param headphones_test
+#' @param get_user_info
+#' @param microphone_test
+#' @param copy_audio_to_location
 #'
 #' @return
 #' @export
 #'
 #' @examples
-PBET <- function(num_items = list("interval_perception" = 24L,
-                                  "find_the_note" = 6L,
+PBET <- function(num_items = list("interval_perception" = 0L,
+                                  "find_this_note" = 0L,
                                   "arrhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
                                   "rhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
-                                  "wjd_audio" = list("key_easy" = 5L, "key_hard" = 5L)),
+                                  "wjd_audio" = list("easy" = 0L, "hard" = 0L)),
                  melody_length = 3:15,
-                 item_bank = itembankr::WJD,
+                 item_bank = WJD::WJD,
                  demographics = TRUE,
                  demo = FALSE,
                  feedback = FALSE,
@@ -109,149 +196,218 @@ PBET <- function(num_items = list("interval_perception" = 24L,
                  SNR_test = TRUE,
                  get_range = TRUE,
                  absolute_url = "https://adaptiveeartraining.com",
-                 examples = list("easy" = 1L, "hard" = 1L),
+                 examples = list(
+                   "find_this_note" = 2L,
+                   "arrhythmic" = list("easy" = 1L, "hard" = 1L),
+                   "rhythmic" = list("easy" = 0L, "hard" = 0L), # because it's effectively the same task as arrhythmic
+                   "wjd_audio" = list("easy" = 0L, "hard" = 0L)
+                  ),
                  final_results = TRUE,
                  musicassessr_state = "production",
                  item_characteristics_sampler_function = item_characteristics_sampler_pbet,
-                 get_trial_characteristics_function = get_trial_characteristics_pbet) {
+                 get_trial_characteristics_function = get_trial_characteristics_pbet,
+                 max_goes_forced = FALSE,
+                 max_goes = 3L,
+                 local_app_file_dir = '/Users/sebsilas/aws-musicassessr-local-file-upload/files/',
+                 sonic_annotator_local_location = '/Users/sebsilas/sonic-annotator',
+                 test_username = character(),
+                 store_results_in_db = FALSE,
+                 get_answer_midi = musicassessr::get_answer_midi,
+                 get_answer_audio = musicassessr::get_answer_pyin_melodic_production,
+                 give_first_melody_note = TRUE,
+                 with_final_page = TRUE,
+                 show_socials = TRUE,
+                 gold_msi = TRUE,
+                 headphones_test = TRUE,
+                 get_user_info = TRUE,
+                 microphone_test = TRUE,
+                 copy_audio_to_location = NULL) {
+
+  stopifnot(
+    is.list(num_items) & length(num_items) == 5,
+    is.numeric(melody_length),
+    is.function(item_bank) | is.data.frame(item_bank),
+    is.logical(demographics),
+    is.logical(demo),
+    is.logical(feedback),
+    is.character(admin_password) & length(admin_password) == 1,
+    is.logical(SNR_test),
+    is.logical(get_range),
+    is.character(absolute_url) & length(absolute_url) == 1,
+    is.list(examples) & length(examples) == 4,
+    is.logical(final_results),
+    is.character(musicassessr_state) & length(musicassessr_state) == 1,
+    is.function(item_characteristics_sampler_function),
+    is.function(get_trial_characteristics_function),
+    is.logical(max_goes_forced),
+    is.integer(max_goes),
+    is.character(local_app_file_dir) & length(local_app_file_dir) == 1,
+    is.character(sonic_annotator_local_location) & length(sonic_annotator_local_location) == 1,
+    is.character(test_username),
+    is.logical(store_results_in_db),
+    is.function(get_answer_midi),
+    is.function(get_answer_audio),
+    is.numeric(num_items$interval_perception),
+    is.numeric(num_items$find_this_note),
+    is.list(num_items$arrhythmic),
+    is.list(num_items$rhythmic),
+    is.list(num_items$wjd_audio),
+    is.logical(give_first_melody_note),
+    is.logical(with_final_page),
+    is.logical(show_socials),
+    is.logical(gold_msi),
+    is.logical(headphones_test),
+    is.logical(get_user_info),
+    is.logical(microphone_test),
+    is.null(copy_audio_to_location) | is.character(copy_audio_to_location) & length(copy_audio_to_location) == 1
+  )
 
   pars_arrhythmic <- c(num_items$arrhythmic, list("melody_length" = melody_length))
   pars_rhythmic <- c(num_items$rhythmic, list("melody_length" = melody_length))
 
-
   if(demo) warning('Running PBET in demo mode!')
+
 
   timeline <- psychTestR::join(
     psychTestR::new_timeline(
       psychTestR::join(
 
         psychTestR::module("PBET",
-                           # introduction, same for all users
 
-                           PBET_intro(demo, SNR_test, get_range, absolute_url = absolute_url, musicassessr_state = musicassessr_state),
+                           # init musicassessr
+                           musicassessr::musicassessr_init(test = "PBET",
+                                                           test_username = test_username,
+                                                           store_results_in_db,
+                                                           local_app_file_dir,
+                                                           sonic_annotator_local_location,
+                                                           copy_audio_to_location = copy_audio_to_location),
+
+                           # introduction, same for all (i.e., midi and audio)
+                           PBET_intro(demo,
+                                      SNR_test,
+                                      get_range,
+                                      absolute_url,
+                                      musicassessr_state,
+                                      headphones_test,
+                                      get_user_info,
+                                      microphone_test,
+                                      max_goes,
+                                      max_goes_forced),
 
                            # interval perception
-                           musicassessr::multi_interval_page(num_items$interval_perception),
-
-                           # arrhythmic
-                           psychTestR::conditional(test = function(state, ...) {
-                             psychTestR::get_global("response_type", state) == "MIDI"
-                           }, logic = musicassessr::arrhythmic_melody_trials(item_bank = item_bank("phrases"),
-                                                                  num_items = num_items$arrhythmic,
-                                                                  num_examples = examples,
-                                                                  feedback = ifelse(feedback, musicassessr::feedback_melodic_production_simple, FALSE),
-                                                                  page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
-                                                                  page_title = "Play the Melody",
-                                                                  page_type = "record_midi_page",
-                                                                  get_answer = musicassessr::get_answer_midi,
-                                                                  instruction_text = "Now you will hear some melodies. Please try and play back the melodies as best as you can.",
-                                                                  item_characteristics_pars = pars_arrhythmic,
-                                                                  item_characteristics_sampler_function = item_characteristics_sampler_function,
-                                                                  get_trial_characteristics_function = get_trial_characteristics_function)),
-
-                           psychTestR::conditional(test = function(state, ...) {
-                             psychTestR::get_global("response_type", state) == "Microphone"
-                           }, logic = musicassessr::arrhythmic_melody_trials(item_bank = item_bank("phrases"),
-                                                                             num_items = num_items$arrhythmic,
-                                                                             num_examples = examples,
-                                                                             get_answer = musicassessr::get_answer_pyin_mel_prod_only,
-                                                                             feedback = ifelse(feedback, musicassessr::feedback_melodic_production_simple, FALSE),
-                                                                             page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
-                                                                             page_title = "Play the Melody",
-                                                                             page_type = "record_audio_page",
-                                                                             instruction_text = "Now you will hear some melodies. Please try and play back the melodies as best as you can.",
-                                                                             item_characteristics_pars = pars_arrhythmic,
-                                                                             item_characteristics_sampler_function = item_characteristics_sampler_function,
-                                                                             get_trial_characteristics_function = get_trial_characteristics_function)),
-
-
-                           # rhythmic
-
-                           psychTestR::conditional(test = function(state, ...) {
-                             psychTestR::get_global("response_type", state) == "MIDI"
-                           }, logic = musicassessr::rhythmic_melody_trials(item_bank = item_bank("phrases"),
-                                                                           num_items = num_items$rhythmic,
-                                                                           num_examples = examples,
-                                                                           feedback = ifelse(feedback, musicassessr::feedback_melodic_production_simple, FALSE),
-                                                                           page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
-                                                                           page_title = "Play the Melody Plus Rhythm",
-                                                                           page_type = "record_midi_page",
-                                                                           get_answer = musicassessr::get_answer_midi,
-                                                                           instruction_text = "Now you will hear some melodies with rhythms. Please try and play back the melodies with their rhythms as best as you can.",
-                                                                           item_characteristics_pars = pars_rhythmic,
-                                                                           item_characteristics_sampler_function = item_characteristics_sampler_function,
-                                                                           get_trial_characteristics_function = get_trial_characteristics_function)),
-
-                           psychTestR::conditional(test = function(state, ...) {
-                             psychTestR::get_global("response_type", state) == "Microphone"
-                           }, logic = musicassessr::rhythmic_melody_trials(item_bank = item_bank("phrases"),
-                                                                           num_items = num_items$rhythmic,
-                                                                           num_examples = examples,
-                                                                           feedback = ifelse(feedback, musicassessr::feedback_melodic_production_simple, FALSE),
-                                                                           get_answer = musicassessr::get_answer_pyin_mel_prod_only,
-                                                                           page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
-                                                                           page_title = "Play the Melody Plus Rhythm",
-                                                                           page_type = "record_audio_page",
-                                                                           instruction_text = "Now you will hear some melodies with rhythms. Please try and play back the melodies with their rhythms as best as you can.",
-                                                                           item_characteristics_pars = pars_rhythmic,
-                                                                           item_characteristics_sampler_function = item_characteristics_sampler_function,
-                                                                           get_trial_characteristics_function = get_trial_characteristics_function)),
-
-
+                           musicassessr::interval_perception_trials(n_items = num_items$interval_perception),
 
 
                            # find that note trials
-                           musicassessr::find_this_note_trials(num_items$find_the_note, num_examples = examples,
-                                                               feedback = feedback, page_type = "reactive"),
+                           musicassessr::find_this_note_trials(num_items$find_this_note,
+                                                               num_examples = examples$find_this_note,
+                                                               feedback = ifelse(feedback, musicassessr::feedback_melodic_production_simple, FALSE),
+                                                               page_type = "reactive"),
+
+
+                           # arrhythmic
+                           pbet_arrhythmic_trials(item_bank("main"), num_items$arrhythmic,
+                                                  examples$arrhythmic, feedback,
+                                                  item_characteristics_sampler_function,
+                                                  get_trial_characteristics_function,
+                                                  max_goes,
+                                                  max_goes_forced, pars_arrhythmic,
+                                                  get_answer_midi = get_answer_midi,
+                                                  get_answer_audio = get_answer_audio,
+                                                  give_first_melody_note = give_first_melody_note),
+
+
+                           # rhythmic
+                           pbet_rhythmic_trials(item_bank("phrases"), num_items$rhythmic,
+                                                examples$rhythmic, feedback,
+                                                item_characteristics_sampler_function,
+                                                get_trial_characteristics_function,
+                                                max_goes,
+                                                max_goes_forced, pars_rhythmic,
+                                                get_answer_midi = get_answer_midi,
+                                                get_answer_audio = get_answer_audio,
+                                                give_first_melody_note = give_first_melody_note),
 
                            # wjd trials
                            musicassessr::wjd_audio_melody_trials(item_bank = item_bank("phrases"),
-                                                                num_items = num_items$wjd_audio,
-                                                                num_examples = examples,
-                                                                feedback = feedback),
+                                                                 num_items = num_items$wjd_audio,
+                                                                 num_examples = examples$wjd_audio,
+                                                                 feedback = feedback),
+
 
                            psychTestR::elt_save_results_to_disk(complete = FALSE),
 
-                           if(final_results) musicassessr::final_results()
+                           if(final_results) final_results_pbet(
+                             test_name = "PBET",
+                             url = absolute_url,
+                             num_items$find_this_note,
+                             sum(unlist(num_items$arrhythmic)),
+                             sum(unlist(num_items$rhythmic)),
+                             show_socials
+                           )
 
         )
       ),
       dict = PBET_dict
     ),
-    psyquest::GMS(subscales = c("Musical Training")),
-    musicassessr::deploy_demographics(demographics),
-    psychTestR::elt_save_results_to_disk(complete = TRUE),
-    psychTestR::final_page("You have completed the Playing By Ear Test!")
-  )
+      psychTestR::elt_save_results_to_disk(complete = TRUE),
+      if(gold_msi) psyquest::GMS(subscales = c("Musical Training")),
+      musicassessr::deploy_demographics(demographics),
+      psychTestR::elt_save_results_to_disk(complete = TRUE),
+      psychTestR::new_timeline(
+        musicassessr::final_page_or_continue_to_new_test(final = with_final_page,
+                                                         task_name = psychTestR::i18n("title")), dict = PBET_dict)
+  ) # end main join
 
 }
+
 
 PBET_intro <- function(demo = FALSE,
                       SNR_test = TRUE,
                       get_range = TRUE,
                       absolute_url,
-                      musicassessr_state = "production") {
+                      musicassessr_state = "production",
+                      headphones_test = TRUE,
+                      get_user_info = TRUE,
+                      microphone_test = TRUE,
+                      max_goes = 3,
+                      max_goes_forced = FALSE) {
 
 
   c(
 
     # introduction page
     psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("PBET_welcome")),
-                                                       shiny::tags$img(src = 'custom-assets/img/music.png', height = 100, width = 100),
-                                                       shiny::tags$img(src = 'custom-assets/img/saxophone.png', height = 100, width = 100),
+                                                       shiny::tags$img(src = 'https://adaptiveeartraining.com/magmaGold/img/music.png', height = 100, width = 100),
+                                                       shiny::tags$img(src = 'https://adaptiveeartraining.com/magmaGold/img/saxophone.png', height = 100, width = 100),
                                                        shiny::tags$p(psychTestR::i18n("PBET_welcome_1")),
                                                        shiny::tags$p(psychTestR::i18n("PBET_welcome_2")),
                                 button_text = psychTestR::i18n("Next"))),
 
-    musicassessr::setup_pages(input = "midi_keyboard_or_microphone", demo = demo, get_instrument_range = get_range,
-                              SNR_test = SNR_test, absolute_url = absolute_url, select_instrument = TRUE),
+    musicassessr::setup_pages(input = "midi_keyboard_or_microphone",
+                              demo = demo,
+                              get_instrument_range = get_range,
+                              SNR_test = SNR_test,
+                              absolute_url = absolute_url,
+                              select_instrument = TRUE,
+                              get_instrument_range_musical_notation = TRUE,
+                              headphones = headphones_test,
+                              get_user_info = get_user_info,
+                              test_type = "instrument",
+                              microphone_test = microphone_test),
     # instructions
-    PBET_instructions()
+    PBET_instructions(max_goes, max_goes_forced)
   )
 
 }
 
-PBET_instructions <- function() {
+PBET_instructions <- function(max_goes, max_goes_forced) {
+
+  if(max_goes_forced) {
+    test_instructions2.1 <- "test_instructions_2.1.1.forced"
+  } else {
+    test_instructions2.1 <- "test_instructions_2.1.1"
+  }
 
   c(
     psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$h2("Instructions"),
@@ -260,7 +416,7 @@ PBET_instructions <- function() {
                                 button_text = psychTestR::i18n("Next")),
 
     psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$h2("Instructions"),
-                                                       shiny::tags$p(psychTestR::i18n("test_instructions_2.1")),
+                                                       shiny::tags$p(paste0(psychTestR::i18n(test_instructions2.1), " ", max_goes, " ", psychTestR::i18n("test_instructions_2.1.2"))),
                                                        shiny::tags$p(psychTestR::i18n("test_instructions_2.2"))),
                                 button_text = psychTestR::i18n("Next"))
   )
@@ -312,9 +468,243 @@ item_characteristics_sampler_pbet <- function(pars = list("key_easy" = 5L,
     prefix = "custom-assets", # custom prefix that will be used to reference your directory
     directoryPath = system.file("www", package = "PBET") # path to resource in your package
   )
-  # shiny::addResourcePath(
-  #   prefix = "item_banks", # custom prefix that will be used to reference your directory
-  #   directoryPath = system.file("item_banks", package = "itembankr") # path to resource in your package
-  # )
 }
 
+
+conditional_trial_block <- function(page_type = c("record_midi_page", "record_audio_page"),
+                                    selection = c("MIDI", "Microphone"),
+                                    trial_block_function,
+                                    item_bank,
+                                    num_items,
+                                    num_examples,
+                                    feedback,
+                                    pars,
+                                    item_characteristics_sampler_function,
+                                    get_trial_characteristics_function,
+                                    max_goes,
+                                    max_goes_forced,
+                                    get_answer,
+                                    give_first_melody_note, ...) {
+
+
+  psychTestR::conditional(test = function(state, ...) {
+    psychTestR::get_global("response_type", state) == selection
+  }, logic = trial_block_function(item_bank = item_bank,
+                                  num_items = num_items,
+                                  num_examples = num_examples,
+                                  feedback = ifelse(feedback, musicassessr::feedback_melodic_production_simple, FALSE),
+                                  page_type = page_type,
+                                  get_answer = get_answer,
+                                  item_characteristics_pars = pars,
+                                  item_characteristics_sampler_function = item_characteristics_sampler_function,
+                                  get_trial_characteristics_function = get_trial_characteristics_function,
+                                  max_goes = max_goes,
+                                  max_goes_forced = max_goes_forced,
+                                  give_first_melody_note = give_first_melody_note))
+}
+
+
+pbet_rhythmic_trials <- function(item_bank, num_items, num_examples, feedback,
+                                 item_characteristics_sampler_function,
+                                 get_trial_characteristics_function,
+                                 max_goes,
+                                 max_goes_forced,
+                                 pars_rhythmic,
+                                 get_answer_midi,
+                                 get_answer_audio,
+                                 give_first_melody_note) {
+
+
+  c(
+  conditional_trial_block(page_type = "record_midi_page",
+                          selection = "MIDI",
+                          trial_block_function = musicassessr::rhythmic_melody_trials,
+                          item_bank = item_bank,
+                          num_items = num_items,
+                          num_examples = num_examples,
+                          feedback = feedback,
+                          pars = pars_rhythmic,
+                          item_characteristics_sampler_function,
+                          get_trial_characteristics_function,
+                          max_goes,
+                          max_goes_forced,
+                          get_answer = get_answer_midi,
+                          give_first_melody_note = give_first_melody_note),
+
+  conditional_trial_block(page_type = "record_audio_page",
+                          selection = "Microphone",
+                          trial_block_function = musicassessr::rhythmic_melody_trials,
+                          item_bank = item_bank,
+                          num_items = num_items,
+                          num_examples = num_examples,
+                          feedback = feedback,
+                          pars = pars_rhythmic,
+                          item_characteristics_sampler_function,
+                          get_trial_characteristics_function,
+                          max_goes,
+                          max_goes_forced,
+                          get_answer = get_answer_audio,
+                          give_first_melody_note = give_first_melody_note)
+  )
+}
+
+pbet_arrhythmic_trials <- function(item_bank, num_items, num_examples, feedback,
+                                   item_characteristics_sampler_function,
+                                   get_trial_characteristics_function,
+                                   max_goes,
+                                   max_goes_forced,
+                                   pars_arrhythmic,
+                                   get_answer_midi,
+                                   get_answer_audio,
+                                   give_first_melody_note) {
+  c(
+    conditional_trial_block(page_type = "record_midi_page",
+                            selection = "MIDI",
+                            trial_block_function = musicassessr::arrhythmic_melody_trials,
+                            item_bank = item_bank,
+                            num_items = num_items,
+                            num_examples = num_examples,
+                            feedback = feedback,
+                            pars = pars_arrhythmic,
+                            item_characteristics_sampler_function,
+                            get_trial_characteristics_function,
+                            max_goes,
+                            max_goes_forced,
+                            get_answer = get_answer_midi,
+                            give_first_melody_note = give_first_melody_note),
+
+    conditional_trial_block(page_type = "record_audio_page",
+                            selection = "Microphone",
+                            trial_block_function = musicassessr::arrhythmic_melody_trials,
+                            item_bank = item_bank,
+                            num_items = num_items,
+                            num_examples = num_examples,
+                            feedback = feedback,
+                            pars = pars_arrhythmic,
+                            item_characteristics_sampler_function,
+                            get_trial_characteristics_function,
+                            max_goes,
+                            max_goes_forced,
+                            get_answer = get_answer_audio,
+                            give_first_melody_note = give_first_melody_note)
+  )
+}
+
+
+
+present_scores_pbet <- function(res, num_items_arrhythmic, num_items_rhythmic) {
+
+  if(num_items_arrhythmic > 0) {
+
+    # arrhythmic
+    arrhythmic_melodies <- musicassessr::tidy_melodies(res$PBET.arrhythmic_melodies)
+
+    if(is.null(arrhythmic_melodies$error)) {
+
+      if(!all(arrhythmic_melodies$error)) {
+
+    arrhythmic_melody_summary <- arrhythmic_melodies %>% dplyr::select(opti3) %>%
+      dplyr::mutate_if(is.character,as.numeric) %>%
+      dplyr::summarise(dplyr::across(dplyr::everything(), ~ mean(.x, na.rm = TRUE)))
+
+      } else {
+        arrhythmic_melody_summary <- list("opti3" = 0)
+      }
+    } else {
+      arrhythmic_melody_summary <- list("opti3" = 0)
+    }
+  }
+
+  if(num_items_rhythmic > 0) {
+
+    rhythmic_melodies <- musicassessr::tidy_melodies(res$PBET.rhythmic_melodies)
+
+    # rhythmic
+    if(is.null(rhythmic_melodies$error)) {
+
+      if(!all(rhythmic_melodies$error)) {
+
+        rhythmic_melody_summary <- rhythmic_melodies %>% dplyr::select(opti3) %>%
+          dplyr::mutate_if(is.character,as.numeric) %>%
+          dplyr::summarise(dplyr::across(dplyr::everything(), ~ mean(.x, na.rm = TRUE)))
+      } else {
+        rhythmic_melody_summary <- list("opti3" = 0)
+      }
+    } else {
+      rhythmic_melody_summary <- list("opti3" = 0)
+    }
+  }
+
+  list("arrhythmic" = ifelse(is.null(arrhythmic_melody_summary), data.frame(accuracy = 1, opti3 = 1), arrhythmic_melody_summary),
+       "rhythmic" = ifelse(is.null(rhythmic_melody_summary), data.frame(accuracy = 1, opti3 = 1), rhythmic_melody_summary))
+
+}
+
+
+
+
+
+final_results_pbet <- function(test_name = "PBET",
+                               url = "https://adaptiveeartraining.com/PBET2022",
+                               num_items_find_this_note = 0L,
+                               num_items_arrhythmic = 0L,
+                               num_items_rhythmic = 0L,
+                               socials = TRUE) {
+
+  c(
+    psychTestR::reactive_page(function(state, ...) {
+
+      res <- as.list(psychTestR::get_results(state, complete = FALSE))
+
+      processed_results <- present_scores_pbet(res, num_items_arrhythmic, num_items_rhythmic)
+
+      final_score <- produce_naive_final_pbet_score(res, num_items_arrhythmic, num_items_rhythmic)
+
+      psychTestR::set_local("final_score", final_score, state) # leave this in; it gets used by musicassessr
+
+
+
+      psychTestR::text_input_page(
+        label = "final_score",
+        prompt = shiny::tags$div(style = "width: 500px;",
+                                 shiny::tags$h2('Final Results'),
+
+                                 shiny::tags$h3('Arrhythmic Melody Scores'),
+
+                                 musicassessr::render_scores_table(processed_results$arrhythmic),
+
+                                 shiny::tags$h3('Rhythmic Melody Scores'),
+
+                                 musicassessr::render_scores_table(processed_results$rhythmic),
+
+                                 shiny::tags$h3('Total Score'),
+                                 shiny::tags$p(final_score),
+                                 shiny::tags$p("Enter a username to see the scoreboard: ")
+
+        )
+      )
+
+    }),
+
+    musicassessr::share_score_page(test_name, url, hashtag = "PlayByEar", socials, leaderboard_name = 'PBET_leaderboard.rda')
+  )
+}
+
+produce_naive_final_pbet_score <- function(score_result_object,
+                                           num_items_arrhythmic,
+                                           num_items_rhythmic) {
+
+  scor <- present_scores_pbet(score_result_object, num_items_arrhythmic, num_items_rhythmic)
+
+  arr_scors <- scor$arrhythmic
+  final_arr <- round(arr_scors[[1]] * 1000)
+
+  rhy_scors <- scor$rhythmic
+
+  final_rhy <- round(rhy_scors[[1]] * 1000)
+
+  final_score <- final_arr + final_rhy
+
+  final_score
+
+}

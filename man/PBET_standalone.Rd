@@ -5,11 +5,11 @@
 \title{Deploy the PBET as a standalone test}
 \usage{
 PBET_standalone(
-  num_items = list(interval_perception = 24L, find_the_note = 6L, arrhythmic =
+  num_items = list(interval_perception = 24L, find_this_note = 6L, arrhythmic =
     list(key_easy = 5L, key_hard = 5L), rhythmic = list(key_easy = 5L, key_hard = 5L),
     wjd_audio = list(key_easy = 5L, key_hard = 5L)),
   melody_length = 3:15,
-  item_bank = itembankr::WJD,
+  item_bank = WJD::WJD,
   demographics = TRUE,
   demo = FALSE,
   feedback = FALSE,
@@ -17,15 +17,32 @@ PBET_standalone(
   SNR_test = TRUE,
   get_range = TRUE,
   absolute_url = "https://adaptiveeartraining.com",
-  examples = list(easy = 1L, hard = 1L),
+  examples = list(find_this_note = 2L, arrhythmic = list(easy = 1L, hard = 1L),
+    rhythmic = list(easy = 1L, hard = 1L), wjd_audio = 0L),
   final_results = TRUE,
   musicassessr_state = "production",
   item_characteristics_sampler_function = item_characteristics_sampler_pbet,
-  get_trial_characteristics_function = get_trial_characteristics_pbet
+  get_trial_characteristics_function = get_trial_characteristics_pbet,
+  max_goes_forced = FALSE,
+  max_goes = 3L,
+  local_app_file_dir = "/Users/sebsilas/aws-musicassessr-local-file-upload/files/",
+  sonic_annotator_local_location = "/Users/sebsilas/sonic-annotator",
+  test_username = character(),
+  store_results_in_db = FALSE,
+  get_answer_midi = musicassessr::get_answer_midi_melodic_production,
+  get_answer_audio = musicassessr::get_answer_pyin_melodic_production,
+  give_first_melody_note = TRUE,
+  with_final_page = TRUE,
+  show_socials = TRUE,
+  gold_msi = TRUE,
+  headphones_test = TRUE,
+  get_user_info = TRUE,
+  microphone_test = TRUE,
+  copy_audio_to_location = NULL
 )
 }
 \arguments{
-\item{get_trial_characteristics_function}{}
+\item{copy_audio_to_location}{}
 }
 \value{
 

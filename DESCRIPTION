@@ -13,4 +13,5 @@ Depends:
     R (>= 2.10)
 RoxygenNote: 7.1.1
 Imports: 
+    WJD (>= 0.1.0),
     magrittr
