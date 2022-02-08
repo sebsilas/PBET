@@ -25,8 +25,8 @@
 #' @param sonic_annotator_local_location
 #' @param test_username
 #' @param store_results_in_db
-#' @param get_answer_midi
-#' @param get_answer_audio
+#' @param get_answer_function_midi
+#' @param get_answer_function_audio
 #' @param give_first_melody_note
 #' @param with_final_page
 #' @param show_socials
@@ -73,8 +73,8 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                             sonic_annotator_local_location = '/Users/sebsilas/sonic-annotator',
                             test_username = character(),
                             store_results_in_db = FALSE,
-                            get_answer_midi = musicassessr::get_answer_midi_melodic_production,
-                            get_answer_audio = musicassessr::get_answer_pyin_melodic_production,
+                            get_answer_function_midi = musicassessr::get_answer_midi_melodic_production,
+                            get_answer_function_audio = musicassessr::get_answer_pyin_melodic_production,
                             give_first_melody_note = TRUE,
                             with_final_page = TRUE,
                             show_socials = TRUE,
@@ -106,8 +106,8 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                    sonic_annotator_local_location,
                     test_username,
                     store_results_in_db,
-                   get_answer_midi,
-                   get_answer_audio,
+                   get_answer_function_midi,
+                   get_answer_function_audio,
                    give_first_melody_note,
                    with_final_page,
                    show_socials,
@@ -144,7 +144,8 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 
 
 
-#' Deploy the PBET
+
+#'  Deploy the PBET
 #'
 #' @param num_items
 #' @param melody_length
@@ -167,8 +168,8 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 #' @param sonic_annotator_local_location
 #' @param test_username
 #' @param store_results_in_db
-#' @param get_answer_midi
-#' @param get_answer_audio
+#' @param get_answer_function_midi
+#' @param get_answer_function_audio
 #' @param give_first_melody_note
 #' @param with_final_page
 #' @param show_socials
@@ -212,8 +213,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                  sonic_annotator_local_location = '/Users/sebsilas/sonic-annotator',
                  test_username = character(),
                  store_results_in_db = FALSE,
-                 get_answer_midi = musicassessr::get_answer_midi_melodic_production,
-                 get_answer_audio = musicassessr::get_answer_pyin_melodic_production,
+                 get_answer_function_midi = musicassessr::get_answer_function_midi_melodic_production,
+                 get_answer_function_audio = musicassessr::get_answer_pyin_melodic_production,
                  give_first_melody_note = TRUE,
                  with_final_page = TRUE,
                  show_socials = TRUE,
@@ -245,8 +246,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
     is.character(sonic_annotator_local_location) & length(sonic_annotator_local_location) == 1,
     is.character(test_username),
     is.logical(store_results_in_db),
-    is.function(get_answer_midi),
-    is.function(get_answer_audio),
+    is.function(get_answer_function_midi),
+    is.function(get_answer_function_audio),
     is.numeric(num_items$interval_perception),
     is.numeric(num_items$find_this_note),
     is.list(num_items$arrhythmic),
@@ -312,8 +313,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                                   get_trial_characteristics_function,
                                                   max_goes,
                                                   max_goes_forced, pars_arrhythmic,
-                                                  get_answer_midi = get_answer_midi,
-                                                  get_answer_audio = get_answer_audio,
+                                                  get_answer_function_midi = get_answer_function_midi,
+                                                  get_answer_function_audio = get_answer_function_audio,
                                                   give_first_melody_note = give_first_melody_note),
 
 
@@ -324,8 +325,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                                 get_trial_characteristics_function,
                                                 max_goes,
                                                 max_goes_forced, pars_rhythmic,
-                                                get_answer_midi = get_answer_midi,
-                                                get_answer_audio = get_answer_audio,
+                                                get_answer_function_midi = get_answer_function_midi,
+                                                get_answer_function_audio = get_answer_function_audio,
                                                 give_first_melody_note = give_first_melody_note),
 
                            # wjd trials
@@ -510,8 +511,8 @@ pbet_rhythmic_trials <- function(item_bank, num_items, num_examples, feedback,
                                  max_goes,
                                  max_goes_forced,
                                  pars_rhythmic,
-                                 get_answer_midi,
-                                 get_answer_audio,
+                                 get_answer_function_midi,
+                                 get_answer_function_audio,
                                  give_first_melody_note) {
 
 
@@ -528,7 +529,7 @@ pbet_rhythmic_trials <- function(item_bank, num_items, num_examples, feedback,
                           get_trial_characteristics_function,
                           max_goes,
                           max_goes_forced,
-                          get_answer = get_answer_midi,
+                          get_answer = get_answer_function_midi,
                           give_first_melody_note = give_first_melody_note),
 
   conditional_trial_block(page_type = "record_audio_page",
@@ -543,7 +544,7 @@ pbet_rhythmic_trials <- function(item_bank, num_items, num_examples, feedback,
                           get_trial_characteristics_function,
                           max_goes,
                           max_goes_forced,
-                          get_answer = get_answer_audio,
+                          get_answer = get_answer_function_audio,
                           give_first_melody_note = give_first_melody_note)
   )
 }
@@ -554,8 +555,8 @@ pbet_arrhythmic_trials <- function(item_bank, num_items, num_examples, feedback,
                                    max_goes,
                                    max_goes_forced,
                                    pars_arrhythmic,
-                                   get_answer_midi,
-                                   get_answer_audio,
+                                   get_answer_function_midi,
+                                   get_answer_function_audio,
                                    give_first_melody_note) {
   c(
     conditional_trial_block(page_type = "record_midi_page",
@@ -570,7 +571,7 @@ pbet_arrhythmic_trials <- function(item_bank, num_items, num_examples, feedback,
                             get_trial_characteristics_function,
                             max_goes,
                             max_goes_forced,
-                            get_answer = get_answer_midi,
+                            get_answer = get_answer_function_midi,
                             give_first_melody_note = give_first_melody_note),
 
     conditional_trial_block(page_type = "record_audio_page",
@@ -585,7 +586,7 @@ pbet_arrhythmic_trials <- function(item_bank, num_items, num_examples, feedback,
                             get_trial_characteristics_function,
                             max_goes,
                             max_goes_forced,
-                            get_answer = get_answer_audio,
+                            get_answer = get_answer_function_audio,
                             give_first_melody_note = give_first_melody_note)
   )
 }
