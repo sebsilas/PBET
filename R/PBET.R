@@ -2,6 +2,7 @@
 
 
 
+
 #' Deploy the PBET as a standalone test
 #'
 #' @param num_items
@@ -35,6 +36,7 @@
 #' @param get_user_info
 #' @param microphone_test
 #' @param copy_audio_to_location
+#' @param allow_repeat_SNR_tests
 #'
 #' @return
 #' @export
@@ -82,7 +84,8 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                             headphones_test = TRUE,
                             get_user_info = TRUE,
                             microphone_test = TRUE,
-                            copy_audio_to_location = NULL) {
+                            copy_audio_to_location = NULL,
+                            allow_repeat_SNR_tests = TRUE) {
 
 
   timeline <- PBET(num_items,
@@ -115,7 +118,8 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                    headphones_test,
                    get_user_info,
                    microphone_test,
-                   copy_audio_to_location)
+                   copy_audio_to_location,
+                   allow_repeat_SNR_tests)
 
 
   # run the test
@@ -136,16 +140,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 
 
 
-
-
-
-
-
-
-
-
-
-#'  Deploy the PBET
+#' Deploy the PBET
 #'
 #' @param num_items
 #' @param melody_length
@@ -178,6 +173,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 #' @param get_user_info
 #' @param microphone_test
 #' @param copy_audio_to_location
+#' @param allow_repeat_SNR_tests
 #'
 #' @return
 #' @export
@@ -222,7 +218,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                  headphones_test = TRUE,
                  get_user_info = TRUE,
                  microphone_test = TRUE,
-                 copy_audio_to_location = NULL) {
+                 copy_audio_to_location = NULL,
+                 allow_repeat_SNR_tests = TRUE) {
 
   stopifnot(
     is.list(num_items) & length(num_items) == 5,
@@ -260,7 +257,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
     is.logical(headphones_test),
     is.logical(get_user_info),
     is.logical(microphone_test),
-    is.null(copy_audio_to_location) | is.character(copy_audio_to_location) & length(copy_audio_to_location) == 1
+    is.null(copy_audio_to_location) | is.character(copy_audio_to_location) & length(copy_audio_to_location) == 1,
+    is.logical(allow_repeat_SNR_tests)
   )
 
   pars_arrhythmic <- c(num_items$arrhythmic, list("melody_length" = melody_length))
@@ -293,7 +291,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                       get_user_info,
                                       microphone_test,
                                       max_goes,
-                                      max_goes_forced),
+                                      max_goes_forced,
+                                      allow_repeat_SNR_tests),
 
                            # interval perception
                            musicassessr::interval_perception_trials(n_items = num_items$interval_perception),
@@ -372,7 +371,8 @@ PBET_intro <- function(demo = FALSE,
                       get_user_info = TRUE,
                       microphone_test = TRUE,
                       max_goes = 3,
-                      max_goes_forced = FALSE) {
+                      max_goes_forced = FALSE,
+                      allow_repeat_SNR_tests = TRUE) {
 
 
   c(
@@ -395,7 +395,8 @@ PBET_intro <- function(demo = FALSE,
                               headphones = headphones_test,
                               get_user_info = get_user_info,
                               test_type = "instrument",
-                              microphone_test = microphone_test),
+                              microphone_test = microphone_test,
+                              allow_repeat_SNR_tests = allow_repeat_SNR_tests),
     # instructions
     PBET_instructions(max_goes, max_goes_forced)
   )
