@@ -16,17 +16,15 @@ PBET_standalone(
   admin_password = "demo",
   SNR_test = TRUE,
   get_range = TRUE,
-  absolute_url = "https://adaptiveeartraining.com",
+  absolute_url = character(),
   examples = list(find_this_note = 2L, arrhythmic = list(easy = 1L, hard = 1L),
     rhythmic = list(easy = 1L, hard = 1L), wjd_audio = 0L),
   final_results = TRUE,
-  musicassessr_state = "production",
+  musicassessr_aws = FALSE,
   item_characteristics_sampler_function = item_characteristics_sampler_pbet,
   get_trial_characteristics_function = get_trial_characteristics_pbet,
   max_goes_forced = FALSE,
   max_goes = 3L,
-  local_app_file_dir = "/Users/sebsilas/aws-musicassessr-local-file-upload/files/",
-  sonic_annotator_local_location = "/Users/sebsilas/sonic-annotator",
   test_username = character(),
   store_results_in_db = FALSE,
   get_answer_function_midi = musicassessr::get_answer_midi_melodic_production,
@@ -39,11 +37,17 @@ PBET_standalone(
   get_user_info = TRUE,
   microphone_test = TRUE,
   copy_audio_to_location = NULL,
-  allow_repeat_SNR_tests = TRUE
+  allow_repeat_SNR_tests = TRUE,
+  append_trial_block_before = psychTestR::module("before"),
+  append_trial_block_after = psychTestR::module("after"),
+  stop_recording_after = 30,
+  skip_setup = FALSE,
+  concise_wording = FALSE,
+  ...
 )
 }
 \arguments{
-\item{allow_repeat_SNR_tests}{}
+\item{concise_wording}{}
 }
 \value{
 

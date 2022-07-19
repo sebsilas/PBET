@@ -10,7 +10,9 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 Depends: 
-    R (>= 2.10)
+    R (>= 2.10),
+    itembankr (>= 0.1.0),
+    WJD (>= 0.1.0)
 RoxygenNote: 7.1.1
 Imports: 
     WJD (>= 0.1.0),

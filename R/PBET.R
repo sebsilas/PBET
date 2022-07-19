@@ -1,8 +1,6 @@
 
 
 
-
-
 #' Deploy the PBET as a standalone test
 #'
 #' @param num_items
@@ -17,7 +15,7 @@
 #' @param absolute_url
 #' @param examples
 #' @param final_results
-#' @param musicassessr_state
+#' @param musicassessr_aws
 #' @param item_characteristics_sampler_function
 #' @param get_trial_characteristics_function
 #' @param max_goes_forced
@@ -37,6 +35,11 @@
 #' @param microphone_test
 #' @param copy_audio_to_location
 #' @param allow_repeat_SNR_tests
+#' @param append_trial_block_before
+#' @param append_trial_block_after
+#' @param stop_recording_after
+#' @param skip_setup
+#' @param concise_wording
 #'
 #' @return
 #' @export
@@ -58,7 +61,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                             admin_password = "demo",
                             SNR_test = TRUE,
                             get_range = TRUE,
-                            absolute_url = "https://adaptiveeartraining.com",
+                            absolute_url = character(),
                             examples = list(
                               "find_this_note" = 2L,
                               "arrhythmic" = list("easy" = 1L, "hard" = 1L),
@@ -66,13 +69,11 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                               "wjd_audio" = 0L
                             ),
                             final_results = TRUE,
-                            musicassessr_state = "production",
+                            musicassessr_aws = FALSE,
                             item_characteristics_sampler_function = item_characteristics_sampler_pbet,
                             get_trial_characteristics_function = get_trial_characteristics_pbet,
                             max_goes_forced = FALSE,
                             max_goes = 3L,
-                            local_app_file_dir = '/Users/sebsilas/aws-musicassessr-local-file-upload/files/',
-                            sonic_annotator_local_location = '/Users/sebsilas/sonic-annotator',
                             test_username = character(),
                             store_results_in_db = FALSE,
                             get_answer_function_midi = musicassessr::get_answer_midi_melodic_production,
@@ -85,7 +86,12 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                             get_user_info = TRUE,
                             microphone_test = TRUE,
                             copy_audio_to_location = NULL,
-                            allow_repeat_SNR_tests = TRUE) {
+                            allow_repeat_SNR_tests = TRUE,
+                            append_trial_block_before = psychTestR::module("before"),
+                            append_trial_block_after = psychTestR::module("after"),
+                            stop_recording_after = 30,
+                            skip_setup = FALSE,
+                            concise_wording = FALSE, ...) {
 
 
   timeline <- PBET(num_items,
@@ -100,13 +106,11 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                     absolute_url,
                     examples,
                     final_results,
-                    musicassessr_state,
+                    musicassessr_aws,
                     item_characteristics_sampler_function,
                     get_trial_characteristics_function,
                     max_goes_forced,
                     max_goes,
-                    local_app_file_dir,
-                   sonic_annotator_local_location,
                     test_username,
                     store_results_in_db,
                    get_answer_function_midi,
@@ -119,22 +123,29 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                    get_user_info,
                    microphone_test,
                    copy_audio_to_location,
-                   allow_repeat_SNR_tests)
+                   allow_repeat_SNR_tests,
+                   append_trial_block_before,
+                   append_trial_block_after,
+                   stop_recording_after,
+                   skip_setup,
+                   concise_wording,
+                   ...)
 
 
   # run the test
   psychTestR::make_test(
     elts = timeline,
-    opt = psychTestR::test_options(title = "Playing By Ear Test",
+    opt = psychTestR::test_options(title = "Play By Ear Test",
                                    admin_password = admin_password,
                                    display = psychTestR::display_options(
                                     left_margin = 1L,
                                      right_margin = 1L,
                                      css = system.file('www/css/style.css', package = "musicassessr")
                                     ),
-                                     additional_scripts = musicassessr::musicassessr_js(state = musicassessr_state,
+                                     additional_scripts = musicassessr::musicassessr_js(musicassessr_aws = musicassessr_aws,
                                                                                         visual_notation = TRUE),
-                                   languages = c("en")))
+                                   languages = c("en"),
+                                   ...))
 }
 
 
@@ -154,13 +165,11 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 #' @param absolute_url
 #' @param examples
 #' @param final_results
-#' @param musicassessr_state
+#' @param musicassessr_aws
 #' @param item_characteristics_sampler_function
 #' @param get_trial_characteristics_function
 #' @param max_goes_forced
 #' @param max_goes
-#' @param local_app_file_dir
-#' @param sonic_annotator_local_location
 #' @param test_username
 #' @param store_results_in_db
 #' @param get_answer_function_midi
@@ -174,6 +183,11 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 #' @param microphone_test
 #' @param copy_audio_to_location
 #' @param allow_repeat_SNR_tests
+#' @param append_trial_block_before
+#' @param append_trial_block_after
+#' @param stop_recording_after
+#' @param skip_setup
+#' @param concise_wording
 #'
 #' @return
 #' @export
@@ -192,7 +206,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                  admin_password = "demo",
                  SNR_test = TRUE,
                  get_range = TRUE,
-                 absolute_url = "https://adaptiveeartraining.com",
+                 absolute_url = character(),
                  examples = list(
                    "find_this_note" = 2L,
                    "arrhythmic" = list("easy" = 1L, "hard" = 1L),
@@ -200,13 +214,11 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                    "wjd_audio" = list("easy" = 0L, "hard" = 0L)
                   ),
                  final_results = TRUE,
-                 musicassessr_state = "production",
+                 musicassessr_aws = FALSE,
                  item_characteristics_sampler_function = item_characteristics_sampler_pbet,
                  get_trial_characteristics_function = get_trial_characteristics_pbet,
                  max_goes_forced = FALSE,
                  max_goes = 3L,
-                 local_app_file_dir = '/Users/sebsilas/aws-musicassessr-local-file-upload/files/',
-                 sonic_annotator_local_location = '/Users/sebsilas/sonic-annotator',
                  test_username = character(),
                  store_results_in_db = FALSE,
                  get_answer_function_midi = musicassessr::get_answer_midi_melodic_production,
@@ -219,7 +231,12 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                  get_user_info = TRUE,
                  microphone_test = TRUE,
                  copy_audio_to_location = NULL,
-                 allow_repeat_SNR_tests = TRUE) {
+                 allow_repeat_SNR_tests = TRUE,
+                 append_trial_block_before = psychTestR::module("before"),
+                 append_trial_block_after = psychTestR::module("after"),
+                 stop_recording_after = 30,
+                 skip_setup = FALSE,
+                 concise_wording = FALSE, ...) {
 
   stopifnot(
     is.list(num_items) & length(num_items) == 5,
@@ -231,16 +248,14 @@ PBET <- function(num_items = list("interval_perception" = 0L,
     is.character(admin_password) & length(admin_password) == 1,
     is.logical(SNR_test),
     is.logical(get_range),
-    is.character(absolute_url) & length(absolute_url) == 1,
+    is.character(absolute_url),
     is.list(examples) & length(examples) == 4,
     is.logical(final_results),
-    is.character(musicassessr_state) & length(musicassessr_state) == 1,
+    is.logical(musicassessr_aws),
     is.function(item_characteristics_sampler_function),
     is.function(get_trial_characteristics_function),
     is.logical(max_goes_forced),
     is.integer(max_goes),
-    is.character(local_app_file_dir) & length(local_app_file_dir) == 1,
-    is.character(sonic_annotator_local_location) & length(sonic_annotator_local_location) == 1,
     is.character(test_username),
     is.logical(store_results_in_db),
     is.function(get_answer_function_midi),
@@ -258,8 +273,12 @@ PBET <- function(num_items = list("interval_perception" = 0L,
     is.logical(get_user_info),
     is.logical(microphone_test),
     is.null(copy_audio_to_location) | is.character(copy_audio_to_location) & length(copy_audio_to_location) == 1,
-    is.logical(allow_repeat_SNR_tests)
-  )
+    is.logical(allow_repeat_SNR_tests),
+    is.list(append_trial_block_before),
+    is.list(append_trial_block_after),
+    is.numeric(stop_recording_after) & length(stop_recording_after) == 1,
+    is.logical(skip_setup),
+    is.logical(concise_wording))
 
   pars_arrhythmic <- c(num_items$arrhythmic, list("melody_length" = melody_length))
   pars_rhythmic <- c(num_items$rhythmic, list("melody_length" = melody_length))
@@ -277,8 +296,6 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                            musicassessr::musicassessr_init(test = "PBET",
                                                            test_username = test_username,
                                                            store_results_in_db,
-                                                           local_app_file_dir,
-                                                           sonic_annotator_local_location,
                                                            copy_audio_to_location = copy_audio_to_location),
 
                            # introduction, same for all (i.e., midi and audio)
@@ -286,13 +303,18 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                       SNR_test,
                                       get_range,
                                       absolute_url,
-                                      musicassessr_state,
+                                      musicassessr_aws,
                                       headphones_test,
                                       get_user_info,
                                       microphone_test,
                                       max_goes,
                                       max_goes_forced,
-                                      allow_repeat_SNR_tests),
+                                      allow_repeat_SNR_tests,
+                                      skip_setup,
+                                      concise_wording),
+
+                           # arbitrary and optional trial block to go first
+                           append_trial_block_before,
 
                            # interval perception
                            musicassessr::interval_perception_trials(n_items = num_items$interval_perception),
@@ -334,8 +356,11 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                                                  num_examples = examples$wjd_audio,
                                                                  feedback = feedback),
 
+                           # arbitrary and optional trial block to go after
+                           append_trial_block_after,
 
-                           psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+                           psychTestR::elt_save_results_to_disk(complete = FALSE), # the test really finishes later (see below)
 
                            if(final_results) final_results_pbet(
                              test_name = "PBET",
@@ -366,13 +391,15 @@ PBET_intro <- function(demo = FALSE,
                       SNR_test = TRUE,
                       get_range = TRUE,
                       absolute_url,
-                      musicassessr_state = "production",
+                      musicassessr_aws = FALSE,
                       headphones_test = TRUE,
                       get_user_info = TRUE,
                       microphone_test = TRUE,
                       max_goes = 3,
                       max_goes_forced = FALSE,
-                      allow_repeat_SNR_tests = TRUE) {
+                      allow_repeat_SNR_tests = TRUE,
+                      skip_setup = FALSE,
+                      concise_wording = FALSE) {
 
 
   c(
@@ -396,9 +423,11 @@ PBET_intro <- function(demo = FALSE,
                               get_user_info = get_user_info,
                               test_type = "instrument",
                               microphone_test = microphone_test,
-                              allow_repeat_SNR_tests = allow_repeat_SNR_tests),
+                              allow_repeat_SNR_tests = allow_repeat_SNR_tests,
+                              skip_setup = skip_setup,
+                              concise_wording = concise_wording),
     # instructions
-    PBET_instructions(max_goes, max_goes_forced)
+    if(!skip_setup) PBET_instructions(max_goes, max_goes_forced)
   )
 
 }
@@ -420,6 +449,10 @@ PBET_instructions <- function(max_goes, max_goes_forced) {
     psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$h2("Instructions"),
                                                        shiny::tags$p(paste0(psychTestR::i18n(test_instructions2.1), " ", max_goes, " ", psychTestR::i18n("test_instructions_2.1.2"))),
                                                        shiny::tags$p(psychTestR::i18n("test_instructions_2.2"))),
+                                button_text = psychTestR::i18n("Next")),
+
+    psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$h2("Instructions"),
+                                                       shiny::tags$p(psychTestR::i18n("test_instructions_4"))),
                                 button_text = psychTestR::i18n("Next"))
   )
 
@@ -449,7 +482,6 @@ item_characteristics_sampler_pbet <- function(pars = list("key_easy" = 5L,
   # given the no. of items, how many of each N will we need? let's count
 
   idxes <- rep(1:no_of_Ns, ceiling(no_items/no_of_Ns))
-  print(idxes)
   count <- 1
   N_list <- c()
 
@@ -550,7 +582,10 @@ pbet_rhythmic_trials <- function(item_bank, num_items, num_examples, feedback,
   )
 }
 
-pbet_arrhythmic_trials <- function(item_bank, num_items, num_examples, feedback,
+pbet_arrhythmic_trials <- function(item_bank,
+                                   num_items,
+                                   num_examples,
+                                   feedback,
                                    item_characteristics_sampler_function,
                                    get_trial_characteristics_function,
                                    max_goes,
@@ -596,22 +631,26 @@ pbet_arrhythmic_trials <- function(item_bank, num_items, num_examples, feedback,
 
 present_scores_pbet <- function(res, num_items_arrhythmic, num_items_rhythmic) {
 
+  print('present_scores_pbet')
+
   if(num_items_arrhythmic > 0) {
 
     # arrhythmic
     arrhythmic_melodies <- musicassessr::tidy_melodies(res$PBET.arrhythmic_melodies)
 
+    print('arrhythmic_melodies')
+    print('error...')
+    print(arrhythmic_melodies$error)
+
     if(is.null(arrhythmic_melodies$error)) {
 
-      if(!all(arrhythmic_melodies$error)) {
-
-    arrhythmic_melody_summary <- arrhythmic_melodies %>% dplyr::select(opti3) %>%
+    arrhythmic_melody_summary <- arrhythmic_melodies %>%
+      dplyr::select(opti3) %>%
       dplyr::mutate_if(is.character,as.numeric) %>%
-      dplyr::summarise(dplyr::across(dplyr::everything(), ~ mean(.x, na.rm = TRUE)))
+      dplyr::filter(!is.na(opti3)) %>%
+      dplyr::pull(opti3) %>%
+      mean(na.rm = TRUE)
 
-      } else {
-        arrhythmic_melody_summary <- list("opti3" = 0)
-      }
     } else {
       arrhythmic_melody_summary <- list("opti3" = 0)
     }
@@ -624,21 +663,20 @@ present_scores_pbet <- function(res, num_items_arrhythmic, num_items_rhythmic) {
     # rhythmic
     if(is.null(rhythmic_melodies$error)) {
 
-      if(!all(rhythmic_melodies$error)) {
+      rhythmic_melody_summary <- rhythmic_melodies %>%
+        dplyr::select(opti3) %>%
+        dplyr::mutate_if(is.character,as.numeric) %>%
+        dplyr::filter(!is.na(opti3)) %>%
+        dplyr::pull(opti3) %>%
+        mean(na.rm = TRUE)
 
-        rhythmic_melody_summary <- rhythmic_melodies %>% dplyr::select(opti3) %>%
-          dplyr::mutate_if(is.character,as.numeric) %>%
-          dplyr::summarise(dplyr::across(dplyr::everything(), ~ mean(.x, na.rm = TRUE)))
-      } else {
-        rhythmic_melody_summary <- list("opti3" = 0)
-      }
     } else {
       rhythmic_melody_summary <- list("opti3" = 0)
     }
   }
 
-  list("arrhythmic" = ifelse(is.null(arrhythmic_melody_summary), data.frame(accuracy = 1, opti3 = 1), arrhythmic_melody_summary),
-       "rhythmic" = ifelse(is.null(rhythmic_melody_summary), data.frame(accuracy = 1, opti3 = 1), rhythmic_melody_summary))
+  list("arrhythmic" = ifelse(is.null(arrhythmic_melody_summary), data.frame(opti3 = 0.01), arrhythmic_melody_summary),
+       "rhythmic" = ifelse(is.null(rhythmic_melody_summary), data.frame(opti3 = 0.01), rhythmic_melody_summary))
 
 }
 
@@ -710,3 +748,7 @@ produce_naive_final_pbet_score <- function(score_result_object,
   final_score
 
 }
+
+
+
+
