@@ -4,3 +4,7 @@
 .httr-oauth
 .DS_Store
 /output
+/audio
+/node
+/test_apps
+/tmp

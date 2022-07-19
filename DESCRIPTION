@@ -17,7 +17,8 @@ RoxygenNote: 7.1.1
 Imports: 
     WJD (>= 0.1.0),
     magrittr,
-    musicassessr (>= 0.0.0.9000)
-Remotes:  
+    musicassessr (>= 0.0.0.9000),
+    assertthat
+Remotes: 
     sebsilas/musicassessr,
     sebsilas/WJD

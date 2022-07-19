@@ -43,11 +43,12 @@ PBET(
   stop_recording_after = 30,
   skip_setup = FALSE,
   concise_wording = FALSE,
+  app_name = character(),
   ...
 )
 }
 \arguments{
-\item{concise_wording}{}
+\item{app_name}{}
 }
 \value{
 

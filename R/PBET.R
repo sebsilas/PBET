@@ -40,6 +40,7 @@
 #' @param stop_recording_after
 #' @param skip_setup
 #' @param concise_wording
+#' @param app_name
 #'
 #' @return
 #' @export
@@ -91,7 +92,8 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                             append_trial_block_after = psychTestR::module("after"),
                             stop_recording_after = 30,
                             skip_setup = FALSE,
-                            concise_wording = FALSE, ...) {
+                            concise_wording = FALSE,
+                            app_name = character(), ...) {
 
 
   timeline <- PBET(num_items,
@@ -129,6 +131,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                    stop_recording_after,
                    skip_setup,
                    concise_wording,
+                   app_name,
                    ...)
 
 
@@ -143,7 +146,8 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                                      css = system.file('www/css/style.css', package = "musicassessr")
                                     ),
                                      additional_scripts = musicassessr::musicassessr_js(musicassessr_aws = musicassessr_aws,
-                                                                                        visual_notation = TRUE),
+                                                                                        visual_notation = TRUE,
+                                                                                        app_name = app_name),
                                    languages = c("en"),
                                    ...))
 }
@@ -188,6 +192,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 #' @param stop_recording_after
 #' @param skip_setup
 #' @param concise_wording
+#' @param app_name
 #'
 #' @return
 #' @export
@@ -236,7 +241,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                  append_trial_block_after = psychTestR::module("after"),
                  stop_recording_after = 30,
                  skip_setup = FALSE,
-                 concise_wording = FALSE, ...) {
+                 concise_wording = FALSE,
+                 app_name = character(), ...) {
 
   stopifnot(
     is.list(num_items) & length(num_items) == 5,
@@ -278,7 +284,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
     is.list(append_trial_block_after),
     is.numeric(stop_recording_after) & length(stop_recording_after) == 1,
     is.logical(skip_setup),
-    is.logical(concise_wording))
+    is.logical(concise_wording),
+    assertthat::is.string(app_name))
 
   pars_arrhythmic <- c(num_items$arrhythmic, list("melody_length" = melody_length))
   pars_rhythmic <- c(num_items$rhythmic, list("melody_length" = melody_length))
