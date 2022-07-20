@@ -31,7 +31,6 @@
 #' @param headphones_test
 #' @param get_user_info
 #' @param microphone_test
-#' @param copy_audio_to_location
 #' @param allow_repeat_SNR_tests
 #' @param append_trial_block_before
 #' @param append_trial_block_after
@@ -181,7 +180,6 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 #' @param headphones_test
 #' @param get_user_info
 #' @param microphone_test
-#' @param copy_audio_to_location
 #' @param allow_repeat_SNR_tests
 #' @param append_trial_block_before
 #' @param append_trial_block_after
@@ -231,7 +229,6 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                  headphones_test = TRUE,
                  get_user_info = TRUE,
                  microphone_test = TRUE,
-                 copy_audio_to_location = NULL,
                  allow_repeat_SNR_tests = TRUE,
                  append_trial_block_before = psychTestR::module("before"),
                  append_trial_block_after = psychTestR::module("after"),
@@ -274,7 +271,6 @@ PBET <- function(num_items = list("interval_perception" = 0L,
     is.logical(headphones_test),
     is.logical(get_user_info),
     is.logical(microphone_test),
-    is.null(copy_audio_to_location) | is.character(copy_audio_to_location) & length(copy_audio_to_location) == 1,
     is.logical(allow_repeat_SNR_tests),
     is.list(append_trial_block_before),
     is.list(append_trial_block_after),
@@ -298,8 +294,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                            # init musicassessr
                            musicassessr::musicassessr_init(test = "PBET",
                                                            test_username = test_username,
-                                                           store_results_in_db,
-                                                           copy_audio_to_location = copy_audio_to_location),
+                                                           store_results_in_db),
 
                            # introduction, same for all (i.e., midi and audio)
                            PBET_intro(demo,
