@@ -242,7 +242,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                  stop_recording_after = 30,
                  skip_setup = FALSE,
                  concise_wording = FALSE,
-                 app_name = character(), ...) {
+                 app_name = "", ...) {
 
   stopifnot(
     is.list(num_items) & length(num_items) == 5,
