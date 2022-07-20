@@ -20,8 +20,6 @@
 #' @param get_trial_characteristics_function
 #' @param max_goes_forced
 #' @param max_goes
-#' @param local_app_file_dir
-#' @param sonic_annotator_local_location
 #' @param test_username
 #' @param store_results_in_db
 #' @param get_answer_function_midi
@@ -86,14 +84,13 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                             headphones_test = TRUE,
                             get_user_info = TRUE,
                             microphone_test = TRUE,
-                            copy_audio_to_location = NULL,
                             allow_repeat_SNR_tests = TRUE,
                             append_trial_block_before = psychTestR::module("before"),
                             append_trial_block_after = psychTestR::module("after"),
                             stop_recording_after = 30,
                             skip_setup = FALSE,
                             concise_wording = FALSE,
-                            app_name = character(), ...) {
+                            app_name = "", ...) {
 
 
   timeline <- PBET(num_items,
@@ -124,7 +121,6 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                    headphones_test,
                    get_user_info,
                    microphone_test,
-                   copy_audio_to_location,
                    allow_repeat_SNR_tests,
                    append_trial_block_before,
                    append_trial_block_after,
