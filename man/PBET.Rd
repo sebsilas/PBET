@@ -36,14 +36,13 @@ PBET(
   headphones_test = TRUE,
   get_user_info = TRUE,
   microphone_test = TRUE,
-  copy_audio_to_location = NULL,
   allow_repeat_SNR_tests = TRUE,
   append_trial_block_before = psychTestR::module("before"),
   append_trial_block_after = psychTestR::module("after"),
   stop_recording_after = 30,
   skip_setup = FALSE,
   concise_wording = FALSE,
-  app_name = character(),
+  app_name = "",
   ...
 )
 }
