@@ -38,6 +38,7 @@
 #' @param skip_setup
 #' @param concise_wording
 #' @param app_name
+#' @param get_self_chosen_anonymous_id
 #'
 #' @return
 #' @export
@@ -89,7 +90,8 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                             stop_recording_after = 30,
                             skip_setup = FALSE,
                             concise_wording = FALSE,
-                            app_name = "", ...) {
+                            app_name = "",
+                            get_self_chosen_anonymous_id = FALSE,...) {
 
 
   timeline <- PBET(num_items,
@@ -127,6 +129,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                    skip_setup,
                    concise_wording,
                    app_name,
+                   get_self_chosen_anonymous_id,
                    ...)
 
 
@@ -138,10 +141,11 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                                    display = psychTestR::display_options(
                                     left_margin = 1L,
                                      right_margin = 1L,
-                                     css = system.file('www/css/style.css', package = "musicassessr")
+                                     css = system.file('www/css/musicassessr.css', package = "musicassessr")
                                     ),
                                      additional_scripts = musicassessr::musicassessr_js(musicassessr_aws = musicassessr_aws,
                                                                                         visual_notation = TRUE,
+                                                                                        midi_input = TRUE,
                                                                                         app_name = app_name),
                                    languages = c("en"),
                                    ...))
@@ -187,6 +191,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 #' @param skip_setup
 #' @param concise_wording
 #' @param app_name
+#' @param get_self_chosen_anonymous_id
 #'
 #' @return
 #' @export
@@ -235,7 +240,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                  stop_recording_after = 30,
                  skip_setup = FALSE,
                  concise_wording = FALSE,
-                 app_name = "", ...) {
+                 app_name = "",
+                 get_self_chosen_anonymous_id = FALSE,...) {
 
   stopifnot(
     is.list(num_items) & length(num_items) == 5,
@@ -277,7 +283,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
     is.numeric(stop_recording_after) & length(stop_recording_after) == 1,
     is.logical(skip_setup),
     is.logical(concise_wording),
-    assertthat::is.string(app_name))
+    assertthat::is.string(app_name),
+    is.logical(get_self_chosen_anonymous_id))
 
   pars_arrhythmic <- c(num_items$arrhythmic, list("melody_length" = melody_length))
   pars_rhythmic <- c(num_items$rhythmic, list("melody_length" = melody_length))
@@ -309,7 +316,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                       max_goes_forced,
                                       allow_repeat_SNR_tests,
                                       skip_setup,
-                                      concise_wording),
+                                      concise_wording,
+                                      get_self_chosen_anonymous_id),
 
                            # arbitrary and optional trial block to go first
                            append_trial_block_before,
@@ -397,7 +405,8 @@ PBET_intro <- function(demo = FALSE,
                       max_goes_forced = FALSE,
                       allow_repeat_SNR_tests = TRUE,
                       skip_setup = FALSE,
-                      concise_wording = FALSE) {
+                      concise_wording = FALSE,
+                      get_self_chosen_anonymous_id = FALSE) {
 
 
   c(
@@ -423,7 +432,8 @@ PBET_intro <- function(demo = FALSE,
                               microphone_test = microphone_test,
                               allow_repeat_SNR_tests = allow_repeat_SNR_tests,
                               skip_setup = skip_setup,
-                              concise_wording = concise_wording),
+                              concise_wording = concise_wording,
+                              get_self_chosen_anonymous_id = get_self_chosen_anonymous_id),
     # instructions
     if(!skip_setup) PBET_instructions(max_goes, max_goes_forced)
   )
