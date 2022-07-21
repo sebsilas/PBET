@@ -434,7 +434,8 @@ PBET_intro <- function(demo = FALSE,
                               allow_repeat_SNR_tests = allow_repeat_SNR_tests,
                               skip_setup = skip_setup,
                               concise_wording = concise_wording,
-                              get_self_chosen_anonymous_id = get_self_chosen_anonymous_id),
+                              get_self_chosen_anonymous_id = get_self_chosen_anonymous_id,
+                              musical_instrument = TRUE),
     # instructions
     if(!skip_setup) PBET_instructions(max_goes, max_goes_forced)
   )
