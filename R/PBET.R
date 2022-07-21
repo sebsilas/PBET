@@ -414,8 +414,8 @@ PBET_intro <- function(demo = FALSE,
 
     # introduction page
     psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("PBET_welcome")),
-                                                       shiny::tags$img(src = 'https://adaptiveeartraining.com/magmaGold/img/music.png', height = 100, width = 100),
-                                                       shiny::tags$img(src = 'https://adaptiveeartraining.com/magmaGold/img/saxophone.png', height = 100, width = 100),
+                                                       shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/music.png', height = 100, width = 100),
+                                                       shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/saxophone.png', height = 100, width = 100),
                                                        shiny::tags$p(psychTestR::i18n("PBET_welcome_1")),
                                                        shiny::tags$p(psychTestR::i18n("PBET_welcome_2")),
                                 button_text = psychTestR::i18n("Next"))),
