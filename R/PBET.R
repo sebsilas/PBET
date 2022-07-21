@@ -466,7 +466,7 @@ PBET_instructions <- function(max_goes, max_goes_forced) {
                                 button_text = psychTestR::i18n("Next")),
 
     psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$h2("Instructions"),
-                                                       shiny::tags$p("If playing a stringed instrument (e.g., cello, guitar) be careful that you do not leave a string ringing when you change note: the note detection algorithm will not work well otherwise.")),
+                                                       shiny::tags$p("Make your notes clear when you play. Particularly, if playing a stringed instrument (e.g., cello, guitar), be careful that you do not leave a string ringing when you change note: the note detection algorithm will not work well otherwise.")),
                                 button_text = psychTestR::i18n("Next"))
   )
 
