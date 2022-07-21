@@ -736,7 +736,7 @@ final_results_pbet <- function(test_name = "PBET",
 
     }),
 
-    musicassessr::share_score_page(test_name, url, hashtag = "PlayByEar", socials, leaderboard_name = 'PBET_leaderboard.rda')
+    musicassessr::share_score_page(test_name, url, hashtag = "PlayByEar", socials)
   )
 }
 
