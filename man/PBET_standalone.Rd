@@ -44,11 +44,12 @@ PBET_standalone(
   concise_wording = FALSE,
   app_name = "",
   get_self_chosen_anonymous_id = FALSE,
+  adjust_range = TRUE,
   ...
 )
 }
 \arguments{
-\item{get_self_chosen_anonymous_id}{}
+\item{adjust_range}{}
 }
 \value{
 

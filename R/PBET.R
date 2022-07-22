@@ -39,6 +39,7 @@
 #' @param concise_wording
 #' @param app_name
 #' @param get_self_chosen_anonymous_id
+#' @param adjust_range
 #'
 #' @return
 #' @export
@@ -91,7 +92,8 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                             skip_setup = FALSE,
                             concise_wording = FALSE,
                             app_name = "",
-                            get_self_chosen_anonymous_id = FALSE,...) {
+                            get_self_chosen_anonymous_id = FALSE,
+                            adjust_range = TRUE, ...) {
 
 
   timeline <- PBET(num_items,
@@ -130,6 +132,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                    concise_wording,
                    app_name,
                    get_self_chosen_anonymous_id,
+                   adjust_range,
                    ...)
 
 
@@ -192,6 +195,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 #' @param concise_wording
 #' @param app_name
 #' @param get_self_chosen_anonymous_id
+#' @param adjust_range
 #'
 #' @return
 #' @export
@@ -241,7 +245,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                  skip_setup = FALSE,
                  concise_wording = FALSE,
                  app_name = "",
-                 get_self_chosen_anonymous_id = FALSE,...) {
+                 get_self_chosen_anonymous_id = FALSE,
+                 adjust_range = TRUE, ...) {
 
   stopifnot(
     is.list(num_items) & length(num_items) == 5,
@@ -284,7 +289,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
     is.logical(skip_setup),
     is.logical(concise_wording),
     assertthat::is.string(app_name),
-    is.logical(get_self_chosen_anonymous_id))
+    is.logical(get_self_chosen_anonymous_id),
+    is.logical(adjust_range))
 
   pars_arrhythmic <- c(num_items$arrhythmic, list("melody_length" = melody_length))
   pars_rhythmic <- c(num_items$rhythmic, list("melody_length" = melody_length))
@@ -318,7 +324,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                       allow_repeat_SNR_tests,
                                       skip_setup,
                                       concise_wording,
-                                      get_self_chosen_anonymous_id),
+                                      get_self_chosen_anonymous_id,
+                                      adjust_range),
 
                            # arbitrary and optional trial block to go first
                            append_trial_block_before,
@@ -407,7 +414,8 @@ PBET_intro <- function(demo = FALSE,
                       allow_repeat_SNR_tests = TRUE,
                       skip_setup = FALSE,
                       concise_wording = FALSE,
-                      get_self_chosen_anonymous_id = FALSE) {
+                      get_self_chosen_anonymous_id = FALSE,
+                      adjust_range = TRUE) {
 
 
   c(
@@ -435,7 +443,8 @@ PBET_intro <- function(demo = FALSE,
                               skip_setup = skip_setup,
                               concise_wording = concise_wording,
                               get_self_chosen_anonymous_id = get_self_chosen_anonymous_id,
-                              musical_instrument = TRUE),
+                              musical_instrument = TRUE,
+                              adjust_range = adjust_range),
     # instructions
     if(!skip_setup) PBET_instructions(max_goes, max_goes_forced)
   )
