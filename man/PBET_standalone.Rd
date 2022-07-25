@@ -45,11 +45,12 @@ PBET_standalone(
   app_name = "",
   get_self_chosen_anonymous_id = FALSE,
   adjust_range = TRUE,
+  main_module_name = "PBET",
   ...
 )
 }
 \arguments{
-\item{adjust_range}{}
+\item{main_module_name}{}
 }
 \value{
 

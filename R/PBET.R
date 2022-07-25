@@ -40,6 +40,7 @@
 #' @param app_name
 #' @param get_self_chosen_anonymous_id
 #' @param adjust_range
+#' @param main_module_name
 #'
 #' @return
 #' @export
@@ -93,7 +94,8 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                             concise_wording = FALSE,
                             app_name = "",
                             get_self_chosen_anonymous_id = FALSE,
-                            adjust_range = TRUE, ...) {
+                            adjust_range = TRUE,
+                            main_module_name = "PBET", ...) {
 
 
   timeline <- PBET(num_items,
@@ -133,6 +135,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                    app_name,
                    get_self_chosen_anonymous_id,
                    adjust_range,
+                   main_module_name,
                    ...)
 
 
@@ -196,6 +199,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 #' @param app_name
 #' @param get_self_chosen_anonymous_id
 #' @param adjust_range
+#' @param main_module_name
 #'
 #' @return
 #' @export
@@ -246,7 +250,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                  concise_wording = FALSE,
                  app_name = "",
                  get_self_chosen_anonymous_id = FALSE,
-                 adjust_range = TRUE, ...) {
+                 adjust_range = TRUE,
+                 main_module_name = "PBET", ...) {
 
   stopifnot(
     is.list(num_items) & length(num_items) == 5,
@@ -290,7 +295,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
     is.logical(concise_wording),
     assertthat::is.string(app_name),
     is.logical(get_self_chosen_anonymous_id),
-    is.logical(adjust_range))
+    is.logical(adjust_range),
+    assertthat::is.string(main_module_name))
 
   pars_arrhythmic <- c(num_items$arrhythmic, list("melody_length" = melody_length))
   pars_rhythmic <- c(num_items$rhythmic, list("melody_length" = melody_length))
@@ -302,7 +308,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
     psychTestR::new_timeline(
       psychTestR::join(
 
-        psychTestR::module("PBET",
+        psychTestR::module(main_module_name,
 
                            # init musicassessr
                            musicassessr::musicassessr_init(test = "PBET",
@@ -654,16 +660,10 @@ pbet_arrhythmic_trials <- function(item_bank,
 
 present_scores_pbet <- function(res, num_items_arrhythmic, num_items_rhythmic) {
 
-  print('present_scores_pbet')
-
   if(num_items_arrhythmic > 0) {
 
     # arrhythmic
     arrhythmic_melodies <- musicassessr::tidy_melodies(res$PBET.arrhythmic_melodies)
-
-    print('arrhythmic_melodies')
-    print('error...')
-    print(arrhythmic_melodies$error)
 
     if(is.null(arrhythmic_melodies$error)) {
 
