@@ -17,14 +17,14 @@ PBET_standalone(
   SNR_test = TRUE,
   get_range = TRUE,
   absolute_url = character(),
-  examples = list(find_this_note = 2L, arrhythmic = list(easy = 1L, hard = 1L),
-    rhythmic = list(easy = 1L, hard = 1L), wjd_audio = 0L),
+  examples = list(find_this_note = 2L, interval_perception = 2L, arrhythmic = list(easy
+    = 1L, hard = 1L), rhythmic = list(easy = 1L, hard = 1L), wjd_audio = 0L),
   final_results = TRUE,
   musicassessr_aws = FALSE,
   item_characteristics_sampler_function = item_characteristics_sampler_pbet,
   get_trial_characteristics_function = get_trial_characteristics_pbet,
   max_goes_forced = FALSE,
-  max_goes = 3L,
+  max_goes = 4L,
   test_username = character(),
   store_results_in_db = FALSE,
   get_answer_function_midi = musicassessr::get_answer_midi_melodic_production,
@@ -46,11 +46,12 @@ PBET_standalone(
   get_self_chosen_anonymous_id = FALSE,
   adjust_range = TRUE,
   main_module_name = "PBET",
+  input = c("midi_keyboard_or_microphone", "microphone", "midi_keyboard"),
   ...
 )
 }
 \arguments{
-\item{main_module_name}{}
+\item{input}{}
 }
 \value{
 

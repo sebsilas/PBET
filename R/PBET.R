@@ -41,6 +41,7 @@
 #' @param get_self_chosen_anonymous_id
 #' @param adjust_range
 #' @param main_module_name
+#' @param input
 #'
 #' @return
 #' @export
@@ -65,6 +66,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                             absolute_url = character(),
                             examples = list(
                               "find_this_note" = 2L,
+                              "interval_perception" = 2L,
                               "arrhythmic" = list("easy" = 1L, "hard" = 1L),
                               "rhythmic" = list("easy" = 1L, "hard" = 1L),
                               "wjd_audio" = 0L
@@ -74,7 +76,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                             item_characteristics_sampler_function = item_characteristics_sampler_pbet,
                             get_trial_characteristics_function = get_trial_characteristics_pbet,
                             max_goes_forced = FALSE,
-                            max_goes = 3L,
+                            max_goes = 4L,
                             test_username = character(),
                             store_results_in_db = FALSE,
                             get_answer_function_midi = musicassessr::get_answer_midi_melodic_production,
@@ -95,7 +97,10 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                             app_name = "",
                             get_self_chosen_anonymous_id = FALSE,
                             adjust_range = TRUE,
-                            main_module_name = "PBET", ...) {
+                            main_module_name = "PBET",
+                            input = c("midi_keyboard_or_microphone",
+                                      "microphone",
+                                      "midi_keyboard"), ...) {
 
 
   timeline <- PBET(num_items,
@@ -136,6 +141,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                    get_self_chosen_anonymous_id,
                    adjust_range,
                    main_module_name,
+                   input,
                    ...)
 
 
@@ -200,6 +206,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 #' @param get_self_chosen_anonymous_id
 #' @param adjust_range
 #' @param main_module_name
+#' @param input
 #'
 #' @return
 #' @export
@@ -221,6 +228,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                  absolute_url = character(),
                  examples = list(
                    "find_this_note" = 2L,
+                   "interval_perception" = 2L,
                    "arrhythmic" = list("easy" = 1L, "hard" = 1L),
                    "rhythmic" = list("easy" = 0L, "hard" = 0L), # because it's effectively the same task as arrhythmic
                    "wjd_audio" = list("easy" = 0L, "hard" = 0L)
@@ -230,7 +238,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                  item_characteristics_sampler_function = item_characteristics_sampler_pbet,
                  get_trial_characteristics_function = get_trial_characteristics_pbet,
                  max_goes_forced = FALSE,
-                 max_goes = 3L,
+                 max_goes = 4L,
                  test_username = character(),
                  store_results_in_db = FALSE,
                  get_answer_function_midi = musicassessr::get_answer_midi_melodic_production,
@@ -251,7 +259,10 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                  app_name = "",
                  get_self_chosen_anonymous_id = FALSE,
                  adjust_range = TRUE,
-                 main_module_name = "PBET", ...) {
+                 main_module_name = "PBET",
+                 input = c("midi_keyboard_or_microphone",
+                           "microphone",
+                           "midi_keyboard"), ...) {
 
   stopifnot(
     is.list(num_items) & length(num_items) == 5,
@@ -264,7 +275,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
     is.logical(SNR_test),
     is.logical(get_range),
     is.character(absolute_url),
-    is.list(examples) & length(examples) == 4,
+    is.list(examples) & length(examples) == 5,
     is.logical(final_results),
     is.logical(musicassessr_aws),
     is.function(item_characteristics_sampler_function),
@@ -296,7 +307,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
     assertthat::is.string(app_name),
     is.logical(get_self_chosen_anonymous_id),
     is.logical(adjust_range),
-    assertthat::is.string(main_module_name))
+    assertthat::is.string(main_module_name),
+    is.character(input))
 
   pars_arrhythmic <- c(num_items$arrhythmic, list("melody_length" = melody_length))
   pars_rhythmic <- c(num_items$rhythmic, list("melody_length" = melody_length))
@@ -331,7 +343,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                       skip_setup,
                                       concise_wording,
                                       get_self_chosen_anonymous_id,
-                                      adjust_range),
+                                      adjust_range,
+                                      input),
 
                            # arbitrary and optional trial block to go first
                            append_trial_block_before,
@@ -415,13 +428,14 @@ PBET_intro <- function(demo = FALSE,
                       headphones_test = TRUE,
                       get_user_info = TRUE,
                       microphone_test = TRUE,
-                      max_goes = 3,
+                      max_goes = 4L,
                       max_goes_forced = FALSE,
                       allow_repeat_SNR_tests = TRUE,
                       skip_setup = FALSE,
                       concise_wording = FALSE,
                       get_self_chosen_anonymous_id = FALSE,
-                      adjust_range = TRUE) {
+                      adjust_range = TRUE,
+                      input = "midi_keyboard_or_microphone") {
 
 
   c(
@@ -434,7 +448,7 @@ PBET_intro <- function(demo = FALSE,
                                                        shiny::tags$p(psychTestR::i18n("PBET_welcome_2")),
                                 button_text = psychTestR::i18n("Next"))),
 
-    musicassessr::setup_pages(input = "midi_keyboard_or_microphone",
+    musicassessr::setup_pages(input = input,
                               demo = demo,
                               get_instrument_range = get_range,
                               SNR_test = SNR_test,
@@ -499,6 +513,14 @@ get_trial_characteristics_pbet <- function(trial_df, trial_no) {
 
 
 
+#' Sampler for PBET
+#'
+#' @param pars
+#'
+#' @return
+#' @export
+#'
+#' @examples
 item_characteristics_sampler_pbet <- function(pars = list("key_easy" = 5L,
                                                           "key_hard" = 5L,
                                                           "melody_length" = 3:15)) {

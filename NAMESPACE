@@ -3,4 +3,5 @@
 export("%>%")
 export(PBET)
 export(PBET_standalone)
+export(item_characteristics_sampler_pbet)
 importFrom(magrittr,"%>%")
