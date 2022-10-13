@@ -8,7 +8,7 @@ PBET_standalone(
   num_items = list(interval_perception = 24L, find_this_note = 6L, arrhythmic =
     list(key_easy = 5L, key_hard = 5L), rhythmic = list(key_easy = 5L, key_hard = 5L),
     wjd_audio = list(key_easy = 5L, key_hard = 5L)),
-  melody_length = 3:15,
+  melody_length = c(3, 15),
   item_bank = WJD::WJD,
   demographics = TRUE,
   demo = FALSE,
@@ -47,11 +47,13 @@ PBET_standalone(
   adjust_range = TRUE,
   main_module_name = "PBET",
   input = c("midi_keyboard_or_microphone", "microphone", "midi_keyboard"),
+  sampler_function_arrhythmic = musicassessr::sample_arrhythmic,
+  sampler_function_rhythmic = musicassessr::sample_rhythmic,
   ...
 )
 }
 \arguments{
-\item{input}{}
+\item{sampler_function_rhythmic}{}
 }
 \value{
 

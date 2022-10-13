@@ -42,6 +42,8 @@
 #' @param adjust_range
 #' @param main_module_name
 #' @param input
+#' @param sampler_function_arrhythmic
+#' @param sampler_function_rhythmic
 #'
 #' @return
 #' @export
@@ -55,7 +57,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                                                                "key_hard" = 5L),
                                              "wjd_audio" = list("key_easy" = 5L,
                                                                 "key_hard" = 5L)),
-                            melody_length = 3:15,
+                            melody_length = c(3, 15),
                             item_bank = WJD::WJD,
                             demographics = TRUE,
                             demo = FALSE,
@@ -100,7 +102,9 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                             main_module_name = "PBET",
                             input = c("midi_keyboard_or_microphone",
                                       "microphone",
-                                      "midi_keyboard"), ...) {
+                                      "midi_keyboard"),
+                            sampler_function_arrhythmic = musicassessr::sample_arrhythmic,
+                            sampler_function_rhythmic = musicassessr::sample_rhythmic, ...) {
 
 
   timeline <- PBET(num_items,
@@ -142,6 +146,8 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                    adjust_range,
                    main_module_name,
                    input,
+                   sampler_function_arrhythmic,
+                   sampler_function_rhythmic,
                    ...)
 
 
@@ -207,7 +213,8 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 #' @param adjust_range
 #' @param main_module_name
 #' @param input
-#'
+#' @param sampler_function_arrhythmic
+#' @param sampler_function_rhythmic
 #' @return
 #' @export
 #'
@@ -217,7 +224,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                   "arrhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
                                   "rhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
                                   "wjd_audio" = list("easy" = 0L, "hard" = 0L)),
-                 melody_length = 3:15,
+                 melody_length = c(3, 15),
                  item_bank = WJD::WJD,
                  demographics = TRUE,
                  demo = FALSE,
@@ -262,7 +269,9 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                  main_module_name = "PBET",
                  input = c("midi_keyboard_or_microphone",
                            "microphone",
-                           "midi_keyboard"), ...) {
+                           "midi_keyboard"),
+                 sampler_function_arrhythmic = musicassessr::sample_arrhythmic,
+                 sampler_function_rhythmic = musicassessr::sample_rhythmic, ...) {
 
   stopifnot(
     is.list(num_items) & length(num_items) == 5,
@@ -278,8 +287,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
     is.list(examples) & length(examples) == 5,
     is.logical(final_results),
     is.logical(musicassessr_aws),
-    is.function(item_characteristics_sampler_function),
-    is.function(get_trial_characteristics_function),
+    is.function(item_characteristics_sampler_function) | is.null(item_characteristics_sampler_function),
+    is.function(get_trial_characteristics_function) | is.null(get_trial_characteristics_function),
     is.logical(max_goes_forced),
     is.integer(max_goes),
     is.character(test_username),
@@ -308,7 +317,10 @@ PBET <- function(num_items = list("interval_perception" = 0L,
     is.logical(get_self_chosen_anonymous_id),
     is.logical(adjust_range),
     assertthat::is.string(main_module_name),
-    is.character(input))
+    is.character(input),
+    is.function(sampler_function_arrhythmic) | is.null(sampler_function_arrhythmic),
+    is.function(sampler_function_rhythmic) | is.null(sampler_function_rhythmic))
+
 
   pars_arrhythmic <- c(num_items$arrhythmic, list("melody_length" = melody_length))
   pars_rhythmic <- c(num_items$rhythmic, list("melody_length" = melody_length))
@@ -361,7 +373,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
 
 
                            # arrhythmic
-                           pbet_arrhythmic_trials(item_bank("main"), num_items$arrhythmic,
+                           pbet_arrhythmic_trials(item_bank("main"),
+                                                  num_items$arrhythmic,
                                                   examples$arrhythmic, feedback,
                                                   item_characteristics_sampler_function,
                                                   get_trial_characteristics_function,
@@ -369,19 +382,23 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                                   max_goes_forced, pars_arrhythmic,
                                                   get_answer_function_midi = get_answer_function_midi,
                                                   get_answer_function_audio = get_answer_function_audio,
-                                                  give_first_melody_note = give_first_melody_note),
+                                                  give_first_melody_note = give_first_melody_note,
+                                                  sampler_function = sampler_function_arrhythmic),
 
 
                            # rhythmic
-                           pbet_rhythmic_trials(item_bank("phrases"), num_items$rhythmic,
-                                                examples$rhythmic, feedback,
+                           pbet_rhythmic_trials(item_bank("phrases"),
+                                                num_items$rhythmic,
+                                                examples$rhythmic,
+                                                feedback,
                                                 item_characteristics_sampler_function,
                                                 get_trial_characteristics_function,
                                                 max_goes,
                                                 max_goes_forced, pars_rhythmic,
                                                 get_answer_function_midi = get_answer_function_midi,
                                                 get_answer_function_audio = get_answer_function_audio,
-                                                give_first_melody_note = give_first_melody_note),
+                                                give_first_melody_note = give_first_melody_note,
+                                                sampler_function = sampler_function_rhythmic),
 
                            # wjd trials
                            musicassessr::wjd_audio_melody_trials(item_bank = item_bank("phrases"),
@@ -391,6 +408,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
 
                            # arbitrary and optional trial block to go after
                            append_trial_block_after,
+
+                          if(store_results_in_db) musicassessr::elt_add_session_to_db(take_scores_from = "db_table", test = "PBET"),
 
 
                            psychTestR::elt_save_results_to_disk(complete = FALSE), # the test really finishes later (see below)
@@ -569,7 +588,8 @@ conditional_trial_block <- function(page_type = c("record_midi_page", "record_au
                                     max_goes,
                                     max_goes_forced,
                                     get_answer,
-                                    give_first_melody_note, ...) {
+                                    give_first_melody_note,
+                                    sampler_function, ...) {
 
 
   psychTestR::conditional(test = function(state, ...) {
@@ -585,11 +605,15 @@ conditional_trial_block <- function(page_type = c("record_midi_page", "record_au
                                   get_trial_characteristics_function = get_trial_characteristics_function,
                                   max_goes = max_goes,
                                   max_goes_forced = max_goes_forced,
-                                  give_first_melody_note = give_first_melody_note))
+                                  give_first_melody_note = give_first_melody_note,
+                                  sampler_function = sampler_function))
 }
 
 
-pbet_rhythmic_trials <- function(item_bank, num_items, num_examples, feedback,
+pbet_rhythmic_trials <- function(item_bank,
+                                 num_items,
+                                 num_examples,
+                                 feedback,
                                  item_characteristics_sampler_function,
                                  get_trial_characteristics_function,
                                  max_goes,
@@ -597,7 +621,8 @@ pbet_rhythmic_trials <- function(item_bank, num_items, num_examples, feedback,
                                  pars_rhythmic,
                                  get_answer_function_midi,
                                  get_answer_function_audio,
-                                 give_first_melody_note) {
+                                 give_first_melody_note,
+                                 sampler_function) {
 
 
   c(
@@ -614,7 +639,8 @@ pbet_rhythmic_trials <- function(item_bank, num_items, num_examples, feedback,
                           max_goes,
                           max_goes_forced,
                           get_answer = get_answer_function_midi,
-                          give_first_melody_note = give_first_melody_note),
+                          give_first_melody_note = give_first_melody_note,
+                          sampler_function = sampler_function),
 
   conditional_trial_block(page_type = "record_audio_page",
                           selection = "Microphone",
@@ -629,7 +655,8 @@ pbet_rhythmic_trials <- function(item_bank, num_items, num_examples, feedback,
                           max_goes,
                           max_goes_forced,
                           get_answer = get_answer_function_audio,
-                          give_first_melody_note = give_first_melody_note)
+                          give_first_melody_note = give_first_melody_note,
+                          sampler_function = sampler_function)
   )
 }
 
@@ -644,7 +671,8 @@ pbet_arrhythmic_trials <- function(item_bank,
                                    pars_arrhythmic,
                                    get_answer_function_midi,
                                    get_answer_function_audio,
-                                   give_first_melody_note) {
+                                   give_first_melody_note,
+                                   sampler_function) {
   c(
     conditional_trial_block(page_type = "record_midi_page",
                             selection = "MIDI",
@@ -659,7 +687,8 @@ pbet_arrhythmic_trials <- function(item_bank,
                             max_goes,
                             max_goes_forced,
                             get_answer = get_answer_function_midi,
-                            give_first_melody_note = give_first_melody_note),
+                            give_first_melody_note = give_first_melody_note,
+                            sampler_function = sampler_function),
 
     conditional_trial_block(page_type = "record_audio_page",
                             selection = "Microphone",
@@ -674,7 +703,8 @@ pbet_arrhythmic_trials <- function(item_bank,
                             max_goes,
                             max_goes_forced,
                             get_answer = get_answer_function_audio,
-                            give_first_melody_note = give_first_melody_note)
+                            give_first_melody_note = give_first_melody_note,
+                            sampler_function = sampler_function)
   )
 }
 
