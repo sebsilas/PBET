@@ -6,3 +6,6 @@
 /node
 /test_apps
 /tmp
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
