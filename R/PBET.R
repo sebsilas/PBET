@@ -59,7 +59,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                                                                "key_hard" = 5L),
                                              "wjd_audio" = list("key_easy" = 5L,
                                                                 "key_hard" = 5L)),
-                            melody_length = c(5, 18),
+                            melody_length = 5:18,
                             item_bank = WJD::WJD,
                             demographics = TRUE,
                             demo = FALSE,
@@ -231,7 +231,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                   "arrhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
                                   "rhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
                                   "wjd_audio" = list("easy" = 0L, "hard" = 0L)),
-                 melody_length = c(5, 18),
+                 melody_length = 5:18,
                  item_bank = WJD::WJD,
                  demographics = TRUE,
                  demo = FALSE,
@@ -831,6 +831,8 @@ produce_naive_final_pbet_score <- function(score_result_object,
 
 }
 
+
+# item_characteristics_sampler_pbet(list("key_easy" = 1, "key_hard" = 1, melody_length = 5:18))
 
 
 
