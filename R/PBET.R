@@ -44,6 +44,8 @@
 #' @param input
 #' @param sampler_function_arrhythmic
 #' @param sampler_function_rhythmic
+#' @param test_name
+#' @param validate_user_entry_into_test
 #'
 #' @return
 #' @export
@@ -104,7 +106,9 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                                       "microphone",
                                       "midi_keyboard"),
                             sampler_function_arrhythmic = musicassessr::sample_arrhythmic,
-                            sampler_function_rhythmic = musicassessr::sample_rhythmic, ...) {
+                            sampler_function_rhythmic = musicassessr::sample_rhythmic,
+                            test_name = "Play By Ear Test",
+                            validate_user_entry_into_test = FALSE, ...) {
 
 
   timeline <- PBET(num_items,
@@ -152,21 +156,24 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 
 
   # run the test
-  psychTestR::make_test(
-    elts = timeline,
-    opt = psychTestR::test_options(title = "Play By Ear Test",
-                                   admin_password = admin_password,
-                                   display = psychTestR::display_options(
-                                    left_margin = 1L,
-                                     right_margin = 1L,
-                                     css = system.file('www/css/musicassessr.css', package = "musicassessr")
-                                    ),
-                                     additional_scripts = musicassessr::musicassessr_js(musicassessr_aws = musicassessr_aws,
-                                                                                        visual_notation = TRUE,
-                                                                                        midi_input = TRUE,
-                                                                                        app_name = app_name),
-                                   languages = c("en"),
-                                   ...))
+
+  timeline %>%
+    musicassessr::validate_user_entry_into_test(validate_user_entry_into_test, .) %>%
+    psychTestR::make_test(
+      elts = timeline,
+      opt = psychTestR::test_options(title = test_name,
+                                     admin_password = admin_password,
+                                     display = psychTestR::display_options(
+                                      left_margin = 1L,
+                                       right_margin = 1L,
+                                       css = system.file('www/css/musicassessr.css', package = "musicassessr")
+                                      ),
+                                       additional_scripts = musicassessr::musicassessr_js(musicassessr_aws = musicassessr_aws,
+                                                                                          visual_notation = TRUE,
+                                                                                          midi_input = TRUE,
+                                                                                          app_name = app_name),
+                                     languages = c("en"),
+                                     ...))
 }
 
 

@@ -49,11 +49,13 @@ PBET_standalone(
   input = c("midi_keyboard_or_microphone", "microphone", "midi_keyboard"),
   sampler_function_arrhythmic = musicassessr::sample_arrhythmic,
   sampler_function_rhythmic = musicassessr::sample_rhythmic,
+  test_name = "Play By Ear Test",
+  validate_user_entry_into_test = FALSE,
   ...
 )
 }
 \arguments{
-\item{sampler_function_rhythmic}{}
+\item{validate_user_entry_into_test}{}
 }
 \value{
 
