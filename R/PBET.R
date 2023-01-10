@@ -59,7 +59,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                                                                "key_hard" = 5L),
                                              "wjd_audio" = list("key_easy" = 5L,
                                                                 "key_hard" = 5L)),
-                            melody_length = c(3, 15),
+                            melody_length = c(5, 18),
                             item_bank = WJD::WJD,
                             demographics = TRUE,
                             demo = FALSE,
@@ -160,7 +160,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
   timeline %>%
     musicassessr::validate_user_entry_into_test(validate_user_entry_into_test, .) %>%
     psychTestR::make_test(
-      elts = timeline,
+      elts = .,
       opt = psychTestR::test_options(title = test_name,
                                      admin_password = admin_password,
                                      display = psychTestR::display_options(
@@ -231,7 +231,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                   "arrhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
                                   "rhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
                                   "wjd_audio" = list("easy" = 0L, "hard" = 0L)),
-                 melody_length = c(3, 15),
+                 melody_length = c(5, 18),
                  item_bank = WJD::WJD,
                  demographics = TRUE,
                  demo = FALSE,
@@ -380,7 +380,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
 
 
                            # arrhythmic
-                           pbet_arrhythmic_trials(item_bank("main"),
+                           pbet_arrhythmic_trials(item_bank("ngram"),
                                                   num_items$arrhythmic,
                                                   examples$arrhythmic, feedback,
                                                   item_characteristics_sampler_function,
@@ -394,7 +394,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
 
 
                            # rhythmic
-                           pbet_rhythmic_trials(item_bank("phrases"),
+                           pbet_rhythmic_trials(item_bank("phrase"),
                                                 num_items$rhythmic,
                                                 examples$rhythmic,
                                                 feedback,
@@ -408,7 +408,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                                 sampler_function = sampler_function_rhythmic),
 
                            # wjd trials
-                           musicassessr::wjd_audio_melody_trials(item_bank = item_bank("phrases"),
+                           musicassessr::wjd_audio_melody_trials(item_bank = item_bank("phrase"),
                                                                  num_items = num_items$wjd_audio,
                                                                  num_examples = examples$wjd_audio,
                                                                  feedback = feedback),
@@ -549,7 +549,7 @@ get_trial_characteristics_pbet <- function(trial_df, trial_no) {
 #' @examples
 item_characteristics_sampler_pbet <- function(pars = list("key_easy" = 5L,
                                                           "key_hard" = 5L,
-                                                          "melody_length" = 3:15)) {
+                                                          "melody_length" = 5:18)) {
 
   # given a range of stimuli lengths and a number of difficulties, produce the test parameters
   no_items <- pars$key_easy + pars$key_hard
