@@ -1,9 +1,9 @@
 Package: PBET
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Play By Ear Test
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Author: Seb Silas
+Maintainer: Seb Silas <sebsilas@gmail.com>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: What license is it under?
@@ -11,14 +11,10 @@ Encoding: UTF-8
 LazyData: true
 Depends: 
     R (>= 2.10),
-    itembankr (>= 0.1.0),
-    WJD (>= 0.1.0)
 RoxygenNote: 7.1.1
 Imports: 
-    WJD (>= 0.1.0),
     magrittr,
     musicassessr (>= 0.0.0.9000),
     assertthat
 Remotes: 
-    sebsilas/musicassessr,
-    sebsilas/WJD
+    sebsilas/musicassessr

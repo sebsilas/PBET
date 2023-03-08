@@ -8,8 +8,9 @@ PBET(
   num_items = list(interval_perception = 0L, find_this_note = 0L, arrhythmic =
     list(key_easy = 5L, key_hard = 5L), rhythmic = list(key_easy = 5L, key_hard = 5L),
     wjd_audio = list(easy = 0L, hard = 0L)),
-  melody_length = c(3, 15),
-  item_bank = WJD::WJD,
+  melody_length = 5:18,
+  arrhythmic_item_bank = WJD::ngram_item_bank,
+  rhythmic_item_bank = WJD::phrase_item_bank,
   demographics = TRUE,
   demo = FALSE,
   feedback = FALSE,
@@ -50,6 +51,8 @@ PBET(
   input = c("midi_keyboard_or_microphone", "microphone", "midi_keyboard"),
   sampler_function_arrhythmic = musicassessr::sample_arrhythmic,
   sampler_function_rhythmic = musicassessr::sample_rhythmic,
+  learn_test_paradigm = FALSE,
+  rel_to_abs_mel_function = NULL,
   ...
 )
 }

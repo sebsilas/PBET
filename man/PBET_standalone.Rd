@@ -8,8 +8,9 @@ PBET_standalone(
   num_items = list(interval_perception = 24L, find_this_note = 6L, arrhythmic =
     list(key_easy = 5L, key_hard = 5L), rhythmic = list(key_easy = 5L, key_hard = 5L),
     wjd_audio = list(key_easy = 5L, key_hard = 5L)),
-  melody_length = c(3, 15),
-  item_bank = WJD::WJD,
+  melody_length = 5:18,
+  arrhythmic_item_bank = WJD::ngram_item_bank,
+  rhythmic_item_bank = WJD::phrase_item_bank,
   demographics = TRUE,
   demo = FALSE,
   feedback = FALSE,
@@ -51,11 +52,13 @@ PBET_standalone(
   sampler_function_rhythmic = musicassessr::sample_rhythmic,
   test_name = "Play By Ear Test",
   validate_user_entry_into_test = FALSE,
+  learn_test_paradigm = FALSE,
+  rel_to_abs_mel_function = NULL,
   ...
 )
 }
 \arguments{
-\item{validate_user_entry_into_test}{}
+\item{rel_to_abs_mel_function}{}
 }
 \value{
 
