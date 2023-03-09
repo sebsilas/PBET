@@ -360,11 +360,11 @@ PBET <- function(num_items = list("interval_perception" = 0L,
 
 
   timeline <- psychTestR::join(
-    psychTestR::new_timeline(
-      psychTestR::join(
 
         psychTestR::module(main_module_name,
 
+           psychTestR::new_timeline(
+             psychTestR::join(
                            # init musicassessr
                            musicassessr::musicassessr_init(test = "PBET",
                                                            test_username = test_username,
@@ -390,7 +390,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                       input),
 
                            # arbitrary and optional trial block to go first
-                           append_trial_block_before,
+                           append_trial_block_before
+                           ), dict = PBET_dict), # End first timeline
 
 
                            # main
@@ -415,7 +416,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                                rel_to_abs_mel_function),
 
 
-                           if(learn_test_paradigm) filler_task(),
+                           #if(learn_test_paradigm) filler_task(),
 
                            # optional (not default) follow-up phase
                            if(learn_test_paradigm) {
@@ -439,6 +440,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                                  sampler_function_rhythmic,
                                                  rel_to_abs_mel_function)},
 
+          psychTestR::new_timeline(
+                    psychTestR::join(
                            # arbitrary and optional trial block to go after
                            append_trial_block_after,
 
@@ -456,10 +459,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                              show_socials
                            )
 
-        )
+        ), dict = PBET_dict)
       ),
-      dict = PBET_dict
-    ),
       psychTestR::elt_save_results_to_disk(complete = TRUE),
       if(gold_msi) psyquest::GMS(subscales = c("Musical Training")),
       musicassessr::deploy_demographics(demographics),
@@ -887,6 +888,7 @@ main_test_paradigms <- function(module_label = "test",
                                 rel_to_abs_mel_function) {
 
   psychTestR::module(label = module_label,
+    psychTestR::new_timeline(
 
     psychTestR::join(
       # interval perception
@@ -939,7 +941,7 @@ main_test_paradigms <- function(module_label = "test",
                                             num_items = num_items$wjd_audio,
                                             num_examples = examples$wjd_audio,
                                             feedback = feedback)
-    )
+      ), dict = PBET_dict)
   )
 
 }
@@ -947,8 +949,8 @@ main_test_paradigms <- function(module_label = "test",
 
 filler_task <- function() {
   psychTestR::join(
-    psyquest::GMS(subscales = c("Musical Training")),
-    musicassessr::deploy_demographics(demographics)
+    psyquest::GMS(subscales = "Musical Training"),
+    musicassessr::deploy_demographics(TRUE)
   )
 }
 
