@@ -79,7 +79,7 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
                               "rhythmic" = list("easy" = 1L, "hard" = 1L),
                               "wjd_audio" = 0L
                             ),
-                            final_results = TRUE,
+                            final_results = FALSE,
                             musicassessr_aws = FALSE,
                             item_characteristics_sampler_function = item_characteristics_sampler_pbet,
                             get_trial_characteristics_function = get_trial_characteristics_pbet,
@@ -260,7 +260,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                    "rhythmic" = list("easy" = 0L, "hard" = 0L), # because it's effectively the same task as arrhythmic
                    "wjd_audio" = list("easy" = 0L, "hard" = 0L)
                   ),
-                 final_results = TRUE,
+                 final_results = FALSE,
                  musicassessr_aws = FALSE,
                  item_characteristics_sampler_function = item_characteristics_sampler_pbet,
                  get_trial_characteristics_function = get_trial_characteristics_pbet,
@@ -368,8 +368,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                            # init musicassessr
                            musicassessr::musicassessr_init(test = "PBET",
                                                            test_username = test_username,
-                                                           store_results_in_db,
-                                                           app_name),
+                                                           store_results_in_db = store_results_in_db,
+                                                           app_name = app_name),
 
                            # introduction, same for all (i.e., midi and audio)
                            PBET_intro(demo,
