@@ -20,4 +20,4 @@ Imports:
     psyquest (>= 1.3.0)
 Remotes:  
     sebsilas/musicassessr,
-    fmhoeger/psyquest
+    klausfrieler/psyquest
