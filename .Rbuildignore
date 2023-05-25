@@ -1,11 +1,11 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
-/output
-/audio
-/node
-/test_apps
-/tmp
+output
+audio
+node
+test_apps
+tmp
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$

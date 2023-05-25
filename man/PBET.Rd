@@ -53,6 +53,7 @@ PBET(
   sampler_function_rhythmic = musicassessr::sample_rhythmic,
   learn_test_paradigm = FALSE,
   rel_to_abs_mel_function = NULL,
+  add_consent_form = FALSE,
   ...
 )
 }

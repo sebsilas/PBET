@@ -3,8 +3,8 @@
 .Rdata
 .httr-oauth
 .DS_Store
-/output
-/audio
-/node
-/test_apps
-/tmp
+output
+audio
+node
+test_apps
+tmp

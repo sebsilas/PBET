@@ -54,11 +54,12 @@ PBET_standalone(
   validate_user_entry_into_test = FALSE,
   learn_test_paradigm = FALSE,
   rel_to_abs_mel_function = NULL,
+  add_consent_form = FALSE,
   ...
 )
 }
 \arguments{
-\item{rel_to_abs_mel_function}{}
+\item{add_consent_form}{}
 }
 \value{
 
