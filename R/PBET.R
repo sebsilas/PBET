@@ -1013,6 +1013,8 @@ conditional_trial_block_find_this_note_trials <- function(num_items,
                             get_answer = get_answer_function_audio)
   )
 }
+
+
 # item_characteristics_sampler_pbet(list("key_easy" = 1, "key_hard" = 1, melody_length = 5:18))
 
 
