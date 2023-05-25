@@ -11,9 +11,6 @@ item_characteristics_sampler_pbet(
 \arguments{
 \item{pars}{}
 }
-\value{
-
-}
 \description{
 Sampler for PBET
 }

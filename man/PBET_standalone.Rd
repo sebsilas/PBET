@@ -18,8 +18,8 @@ PBET_standalone(
   SNR_test = TRUE,
   get_range = TRUE,
   absolute_url = character(),
-  examples = list(find_this_note = 2L, interval_perception = 2L, arrhythmic = list(easy
-    = 1L, hard = 1L), rhythmic = list(easy = 1L, hard = 1L), wjd_audio = 0L),
+  examples = list(find_this_note = 2L, interval_perception = 2L, arrhythmic = list(easy =
+    1L, hard = 1L), rhythmic = list(easy = 1L, hard = 1L), wjd_audio = 0L),
   final_results = FALSE,
   musicassessr_aws = FALSE,
   item_characteristics_sampler_function = item_characteristics_sampler_pbet,
@@ -60,9 +60,6 @@ PBET_standalone(
 }
 \arguments{
 \item{add_consent_form}{}
-}
-\value{
-
 }
 \description{
 Deploy the PBET as a standalone test

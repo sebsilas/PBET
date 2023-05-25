@@ -1,5 +1,20 @@
 
 
+#' No examples helper
+#'
+#' @return
+#' @export
+#'
+#' @examples
+no_examples <- function() {
+  list(
+    arrhythmic = list("key_easy" = 0, "key_hard" = 0),
+    rhythmic = list("key_easy" = 0, "key_hard" = 0),
+    find_this_note = 0L,
+    wjd_audio = list("key_easy" = 0, "key_hard" = 0),
+    interval_perception = 0L)
+}
+
 is.null.or <- function(x, f) {
   is.null(x) || f(x)
 }
