@@ -1,5 +1,13 @@
 
 
+.onLoad <- function(...) {
+  shiny::addResourcePath(
+    prefix = "custom-assets", # custom prefix that will be used to reference your directory
+    directoryPath = system.file("www", package = "PBET") # path to resource in your package
+  )
+}
+
+
 #' No examples helper
 #'
 #' @return

@@ -3,16 +3,18 @@ library(tidyverse)
 
 WJD::ngram_item_bank %>% nrow()
 
-# 1,713,401
+# 2,179,098
 
 # With 20 melodies and the standard sampling method, what melody lengths would we end up with?
 t <- WJD::phrase_item_bank %>% as_tibble() %>% musicassessr::item_sampler(20)
 
+range(t$N)
+
 # You would end up with only lengths 2 to 21
 
 WJD_ngram_minified <- WJD::ngram_item_bank %>%
-  as_tibble() %>%
-  itembankr::subset_item_bank(item_length = c(2, 21))
+  itembankr::subset_item_bank(item_length = c(2, 21),
+                              retain_classes = TRUE)
 
 nrow(WJD_ngram_minified)/nrow(WJD::ngram_item_bank)
 

@@ -5,7 +5,7 @@
 \title{Sampler for PBET}
 \usage{
 item_characteristics_sampler_pbet(
-  pars = list(key_easy = 5L, key_hard = 5L, melody_length = 5:18)
+  pars = list(key_easy = 5L, key_hard = 5L, melody_length = 5:18, proportion_visual = 0)
 )
 }
 \arguments{

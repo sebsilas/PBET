@@ -7,7 +7,7 @@
 PBET(
   num_items = list(interval_perception = 0L, find_this_note = 0L, arrhythmic =
     list(key_easy = 5L, key_hard = 5L), rhythmic = list(key_easy = 5L, key_hard = 5L),
-    wjd_audio = list(easy = 0L, hard = 0L)),
+    wjd_audio = list(key_easy = 0L, key_hard = 0L)),
   melody_length = 5:18,
   arrhythmic_item_bank = PBET::WJD_ngram_minified,
   rhythmic_item_bank = PBET::WJD_phrase_item_bank,
@@ -18,9 +18,9 @@ PBET(
   SNR_test = TRUE,
   get_range = TRUE,
   absolute_url = character(),
-  examples = list(find_this_note = 2L, interval_perception = 2L, arrhythmic = list(easy =
-    1L, hard = 1L), rhythmic = list(easy = 0L, hard = 0L), wjd_audio = list(easy = 0L,
-    hard = 0L)),
+  examples = list(find_this_note = 2L, interval_perception = 2L, arrhythmic =
+    list(key_easy = 1L, key_hard = 1L), rhythmic = list(key_easy = 0L, key_hard = 0L),
+    wjd_audio = list(key_easy = 0L, key_hard = 0L)),
   final_results = FALSE,
   musicassessr_aws = FALSE,
   item_characteristics_sampler_function = item_characteristics_sampler_pbet,
@@ -28,11 +28,11 @@ PBET(
   max_goes_forced = FALSE,
   max_goes = 4L,
   test_username = character(),
-  store_results_in_db = FALSE,
+  use_musicassessr_db = FALSE,
   get_answer_function_midi = musicassessr::get_answer_midi_melodic_production,
   get_answer_function_audio = musicassessr::get_answer_pyin_melodic_production,
   give_first_melody_note = TRUE,
-  with_final_page = TRUE,
+  with_final_page = FALSE,
   show_socials = TRUE,
   gold_msi = TRUE,
   headphones_test = TRUE,
@@ -48,14 +48,25 @@ PBET(
   get_self_chosen_anonymous_id = FALSE,
   adjust_range = TRUE,
   main_module_name = "PBET",
-  input = c("midi_keyboard_or_microphone", "microphone", "midi_keyboard"),
+  input_type = c("midi_keyboard_or_microphone", "microphone", "midi_keyboard"),
   sampler_function_arrhythmic = musicassessr::sample_arrhythmic,
   sampler_function_rhythmic = musicassessr::sample_rhythmic,
   learn_test_paradigm = FALSE,
   rel_to_abs_mel_function = NULL,
   add_consent_form = FALSE,
+  proportion_visual = list(learn = 0, test = 0),
+  default_range = NULL,
+  default_singing_range = NULL,
+  melody_block_paradigm = c("standard", "sing_melody_first",
+    "learn_phase_visual_display_modality"),
+  show_introduction = FALSE,
+  num_items_review = list(arrhythmic = 0L, rhythmic = 0L),
+  instrument_id = NULL,
   ...
 )
+}
+\arguments{
+\item{instrument_id}{Set what instrument is being used a priori.}
 }
 \description{
 Deploy the PBET
