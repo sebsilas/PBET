@@ -2,11 +2,16 @@ Package: PBET
 Type: Package
 Title: Play By Ear Test
 Version: 0.1.0
-Author: Seb Silas
+Authors@R: 
+    person(given = "Sebastian",
+           family = "Silas",
+           role = c("aut", "cre"),
+           email = "sebsilas@gmail.com",
+           comment = c(ORCID = "0000-0001-8140-6528"))
 Maintainer: Seb Silas <sebsilas@gmail.com>
-Description: More about what it does (maybe more than one line)
+Description: A musical ability test to assess playing by ear abilities.
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: 
