@@ -9,7 +9,7 @@ Authors@R:
            email = "sebsilas@gmail.com",
            comment = c(ORCID = "0000-0001-8140-6528"))
 Maintainer: Seb Silas <sebsilas@gmail.com>
-Description: A musical ability test to assess playing by ear abilities.
+Description: A musical ability test to assess playing by ear abilities through recorded audio or MIDI.
     Use four spaces when indenting paragraphs within the Description.
 License: MIT + file LICENSE
 Encoding: UTF-8
