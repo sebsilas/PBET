@@ -1,7 +1,7 @@
 Package: PBET
 Type: Package
 Title: Play By Ear Test
-Version: 0.1.0
+Version: 1.0.0
 Authors@R: 
     person(given = "Sebastian",
            family = "Silas",
