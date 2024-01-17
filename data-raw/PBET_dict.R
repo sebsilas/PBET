@@ -8,5 +8,5 @@ PBET_dict <- musicassessr::dict(additional_dict = PBET_dict_df)
 
 PBET_dict_t <- as.data.frame(PBET_dict)
 
-usethis::use_data(PBET_dict, overwrite = TRUE, internal = TRUE)
+usethis::use_data(PBET_dict, overwrite = TRUE)
 

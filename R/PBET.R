@@ -62,13 +62,13 @@
 #' @export
 #'
 #' @examples
-PBET_standalone <- function(num_items = list("interval_perception" = 24L,
-                                             "find_this_note" = 6L,
-                                             "arrhythmic" = list("key_easy" = 5L,
+PBET_standalone <- function(num_items = list(interval_perception = 24L,
+                                             find_this_note = 6L,
+                                             arrhythmic = list("key_easy" = 5L,
                                                                  "key_hard" = 5L),
-                                             "rhythmic" = list("key_easy" = 5L,
+                                             rhythmic = list("key_easy" = 5L,
                                                                "key_hard" = 5L),
-                                             "wjd_audio" = list("key_easy" = 5L,
+                                             wjd_audio = list("key_easy" = 5L,
                                                                 "key_hard" = 5L)),
                             melody_length = 5:18,
                             arrhythmic_item_bank = PBET::WJD_ngram_minified, # this is correct, this is a version dispatched with PBET to avoid the WJD dependency
@@ -266,15 +266,18 @@ PBET_standalone <- function(num_items = list("interval_perception" = 24L,
 #' @param show_introduction
 #' @param num_items_review
 #' @param instrument_id Set what instrument is being used a priori.
+#' @param user_id The user's ID, if using musicassessr_db and applicable.
+#' @param experiment_id The experiment ID, if using musicassessr_db and applicable.
+#' @param present_continue_to_new_test_page Should a "continue to test test" page be presented at the end of the PBET in a broader timeline?
 #' @return
 #' @export
 #'
 #' @examples
-PBET <- function(num_items = list("interval_perception" = 0L,
-                                  "find_this_note" = 0L,
-                                  "arrhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
-                                  "rhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
-                                  "wjd_audio" = list("key_easy" = 0L, "key_hard" = 0L)),
+PBET <- function(num_items = list(interval_perception = 0L,
+                                  find_this_note = 0L,
+                                  arrhythmic = list(key_easy = 5L, key_hard = 5L),
+                                  rhythmic = list(key_easy = 5L, key_hard = 5L),
+                                  wjd_audio = list(key_easy = 0L, key_hard = 0L)),
                  melody_length = 5:18,
                  arrhythmic_item_bank = PBET::WJD_ngram_minified,
                  rhythmic_item_bank = PBET::WJD_phrase_item_bank,
@@ -333,7 +336,10 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                  melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
                  show_introduction = FALSE,
                  num_items_review = list("arrhythmic" = 0L, "rhythmic" = 0L),
-                 instrument_id = NULL, ...) {
+                 instrument_id = NULL,
+                 user_id = NULL,
+                 experiment_id = NULL,
+                 present_continue_to_new_test_page = TRUE, ...) {
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
   input_type <- match.arg(input_type)
@@ -400,7 +406,9 @@ PBET <- function(num_items = list("interval_perception" = 0L,
     melody_block_paradigm %in% c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
     is.scalar.logical(show_introduction),
     setequal(names(num_items_review), c("arrhythmic", "rhythmic")) & is.integer(num_items_review$arrhythmic) & is.integer(num_items_review$rhythmic),
-    is.null.or(instrument_id, is.integer)
+    is.null.or(instrument_id, is.integer),
+    is.null.or(user_id, is.integer),
+    is.null.or(experiment_id, is.integer)
     )
 
   if(melody_block_paradigm == 'learn_phase_visual_display_modality' && give_first_melody_note) stop("give_first_melody_note must be FALSE if the melody_block_paradigm is learn_phase_visual_display_modality")
@@ -428,7 +436,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
              psychTestR::join(
 
                            # Set test
-                           musicassessr::set_test(test_name = "PBET", test_id = 2L),
+                           if(use_musicassessr_db) musicassessr::set_test(test_name = "PBET", test_id = 2L),
 
                            # Set instrument
                            musicassessr::set_instrument(instrument_id),
@@ -459,11 +467,11 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                            # Arbitrary and optional trial block to before main content
                            append_trial_block_before
 
-                           ), dict = PBET_dict), # End first timeline
+                           ), dict = PBET::PBET_dict), # End first timeline
 
 
                            # Main test paradigm
-
+                        psychTestR::new_timeline(
                            main_test_paradigms(module_label = if(learn_test_paradigm) "learn" else "test",
                                                num_items,
                                                examples,
@@ -485,39 +493,23 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                                rel_to_abs_mel_function,
                                                melody_block_paradigm,
                                                review = FALSE,
-                                               phase = "learn"),
+                                               phase = "learn",
+                                               learn_test_paradigm,
+                                               arrhythmic_page_text = psychTestR::i18n("arrhythmic_melody_trial_page_text"),
+                                               arrhythmic_page_title = psychTestR::i18n("arrhythmic_melody_trial_page_title"),
+                                               arrhythmic_instruction_text = psychTestR::i18n("arrhythmic_melody_trial_instruction_text"),
+                                               rhythmic_page_text = psychTestR::i18n("rhythmic_melody_trial_page_text"),
+                                               rhythmic_page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
+                                               rhythmic_instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text")), dict = PBET_dict),
 
 
                            if (learn_test_paradigm) musicassessr::filler_task(),
 
                            # Optional follow-up phase (not default)
                            if (learn_test_paradigm) {
-                             main_test_paradigms(module_label = "test",
-                                                 num_items,
-                                                 examples,
-                                                 feedback,
-                                                 page_type,
-                                                 arrhythmic_item_bank,
-                                                 rhythmic_item_bank,
-                                                 item_characteristics_sampler_function,
-                                                 get_trial_characteristics_function,
-                                                 max_goes,
-                                                 max_goes_forced,
-                                                 pars_arrhythmic_test,
-                                                 pars_rhythmic_test,
-                                                 give_first_melody_note,
-                                                 get_answer_function_midi,
-                                                 get_answer_function_audio,
-                                                 sampler_function_arrhythmic,
-                                                 sampler_function_rhythmic,
-                                                 rel_to_abs_mel_function,
-                                                 melody_block_paradigm,
-                                                 review = FALSE,
-                                                 phase = "test") },
-
-                             if (num_items_review$arrhythmic > 0L | num_items_review$rhythmic > 0L) {
-                               main_test_paradigms(module_label = "review",
-                                                   num_items_review,
+                             psychTestR::new_timeline(
+                               main_test_paradigms(module_label = "test",
+                                                   num_items,
                                                    examples,
                                                    feedback,
                                                    page_type,
@@ -527,25 +519,61 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                                                    get_trial_characteristics_function,
                                                    max_goes,
                                                    max_goes_forced,
-                                                   pars_arrhythmic = NULL,
-                                                   pars_rhythmic = NULL,
+                                                   pars_arrhythmic_test,
+                                                   pars_rhythmic_test,
                                                    give_first_melody_note,
                                                    get_answer_function_midi,
                                                    get_answer_function_audio,
-                                                   sampler_function_arrhythmic = NULL,
-                                                   sampler_function_rhythmic = NULL,
+                                                   sampler_function_arrhythmic,
+                                                   sampler_function_rhythmic,
                                                    rel_to_abs_mel_function,
                                                    melody_block_paradigm,
-                                                   review = TRUE,
-                                                   phase = "review") },
+                                                   review = FALSE,
+                                                   phase = "test",
+                                                   learn_test_paradigm,
+                                                   arrhythmic_page_text = psychTestR::i18n("arrhythmic_melody_trial_page_text"),
+                                                   arrhythmic_page_title = psychTestR::i18n("arrhythmic_melody_trial_page_title"),
+                                                   arrhythmic_instruction_text = psychTestR::i18n("arrhythmic_melody_trial_instruction_text"),
+                                                   rhythmic_page_text = psychTestR::i18n("rhythmic_melody_trial_page_text"),
+                                                   rhythmic_page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
+                                                   rhythmic_instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text")), dict = PBET_dict) },
+
+                             if (num_items_review$arrhythmic > 0L | num_items_review$rhythmic > 0L) {
+                               psychTestR::new_timeline(
+                                 main_test_paradigms(module_label = "review",
+                                                     num_items_review,
+                                                     examples,
+                                                     feedback,
+                                                     page_type,
+                                                     arrhythmic_item_bank,
+                                                     rhythmic_item_bank,
+                                                     item_characteristics_sampler_function,
+                                                     get_trial_characteristics_function,
+                                                     max_goes,
+                                                     max_goes_forced,
+                                                     pars_arrhythmic = NULL,
+                                                     pars_rhythmic = NULL,
+                                                     give_first_melody_note,
+                                                     get_answer_function_midi,
+                                                     get_answer_function_audio,
+                                                     sampler_function_arrhythmic = NULL,
+                                                     sampler_function_rhythmic = NULL,
+                                                     rel_to_abs_mel_function,
+                                                     melody_block_paradigm,
+                                                     review = TRUE,
+                                                     phase = "review",
+                                                     learn_test_paradigm,
+                                                     arrhythmic_page_text = psychTestR::i18n("arrhythmic_melody_trial_page_text"),
+                                                     arrhythmic_page_title = psychTestR::i18n("arrhythmic_melody_trial_page_title"),
+                                                     arrhythmic_instruction_text = psychTestR::i18n("arrhythmic_melody_trial_instruction_text"),
+                                                     rhythmic_page_text = psychTestR::i18n("rhythmic_melody_trial_page_text"),
+                                                     rhythmic_page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
+                                                     rhythmic_instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text")), dict = PBET_dict) },
 
           psychTestR::new_timeline(
                     psychTestR::join(
                            # Arbitrary and optional trial block to go after
                            append_trial_block_after,
-
-                          if(use_musicassessr_db) musicassessr::elt_add_session_to_db(take_scores_from = "db_table", test = "PBET"),
-
 
                            psychTestR::elt_save_results_to_disk(complete = FALSE), # the test really finishes later (see below)
 
@@ -558,7 +586,7 @@ PBET <- function(num_items = list("interval_perception" = 0L,
                              show_socials
                            )
 
-        ), dict = PBET_dict)
+        ), dict = PBET::PBET_dict)
       ),
       psychTestR::elt_save_results_to_disk(complete = TRUE),
       if(gold_msi) psyquest::GMS(subscales = c("Musical Training")),
@@ -566,7 +594,8 @@ PBET <- function(num_items = list("interval_perception" = 0L,
       psychTestR::elt_save_results_to_disk(complete = TRUE),
       psychTestR::new_timeline(
         musicassessr::final_page_or_continue_to_new_test(final = with_final_page,
-                                                         task_name = psychTestR::i18n("title")), dict = PBET_dict)
+                                                         task_name = psychTestR::i18n("title"),
+                                                         present_continue_to_new_test_page = present_continue_to_new_test_page), dict = PBET::PBET_dict)
   ) # end main join
 
   if(add_consent_form) {
@@ -691,6 +720,13 @@ item_characteristics_sampler_pbet <- function(pars = list("key_easy" = 5L,
 
   # Given a range of stimuli lengths and a number of difficulties, produce the test parameters
   no_items <- pars$key_easy + pars$key_hard
+  no_items_key_easy <- pars$key_easy
+  no_items_key_hard <- pars$key_hard
+
+  # Deal with possibility of infinity (i.e., user-determined end time)
+  no_items <- if(is.infinite(no_items)) 999 else no_items
+  no_items_key_easy <- if(is.infinite(no_items_key_easy)) 999 else no_items_key_easy
+  no_items_key_hard <- if(is.infinite(no_items_key_hard)) 999 else no_items_key_hard
 
   # If the proportion of visual items is > 0, how many visual items should there be?
   num_visual <- round(pars$proportion_visual * no_items)
@@ -710,20 +746,30 @@ item_characteristics_sampler_pbet <- function(pars = list("key_easy" = 5L,
   count <- 1
   N_list <- c()
 
-  while(count < no_items+1) {
-    N_list <- c(N_list, pars$melody_length[idxes[count]])
+  while(count < no_items + 1) {
+    idx <- idxes[count]
+    N_list <- c(N_list, pars$melody_length[idx])
     count <- count + 1
   }
 
-  key_difficulty_labels <- c(rep("easy", pars$key_easy), rep("hard", pars$key_hard))
+  if(no_items_key_easy == 999 || no_items_key_hard == 999) {
+    key_difficulty_labels <- c(rep("easy", 500), rep("hard", 499))
+  } else {
+    key_difficulty_labels <- c(rep("easy", no_items_key_easy), rep("hard", no_items_key_hard))
+  }
+
+  # Randomise the order
+  N_list <- sample(N_list)
+  key_difficulty_labels <- sample(key_difficulty_labels)
+
 
   tibble::tibble(trial_no = 1:no_items,
-                 melody_length = N_list[base::order(N_list)],
+                 melody_length = N_list,
                  key_difficulty = key_difficulty_labels,
-                 display_modality = display_modality_labels
-                 )
+                 display_modality = display_modality_labels)
 }
 
+# t <- item_characteristics_sampler_pbet(list("key_easy" = Inf, "key_hard" = Inf, melody_length = 5:18, proportion_visual = 0))
 
 # item_characteristics_sampler_pbet(list("key_easy" = 1, "key_hard" = 1, melody_length = 5:18, proportion_visual = 0))
 
@@ -748,7 +794,12 @@ conditional_trial_block <- function(page_type = c("record_midi_page", "record_au
                                     rel_to_abs_mel_function = NULL,
                                     melody_block_paradigm = c('standard', 'sing_melody_first'),
                                     review = FALSE,
-                                    phase = c('test', 'learn', 'review')) {
+                                    phase = c('test', 'learn', 'review'),
+                                    singing_trials = FALSE,
+                                    learn_test_paradigm = FALSE,
+                                    page_text = "",
+                                    page_title = "",
+                                    instruction_text = "") {
 
   fun_name <- as.character(substitute(trial_block_function))[3]
 
@@ -771,7 +822,12 @@ conditional_trial_block <- function(page_type = c("record_midi_page", "record_au
     rel_to_abs_mel_function = rel_to_abs_mel_function,
     melody_block_paradigm = if(fun_name == "find_this_note_trials") NULL else melody_block_paradigm,
     review = if(fun_name == "find_this_note_trials") NULL else review,
-    phase = if(fun_name == "find_this_note_trials") NULL else phase)
+    phase = if(fun_name == "find_this_note_trials") NULL else phase,
+    singing_trials = singing_trials,
+    learn_test_paradigm = if(fun_name == "find_this_note_trials") NULL else learn_test_paradigm,
+    page_text = if(fun_name == "find_this_note_trials") NULL else page_text,
+    page_title = if(fun_name == "find_this_note_trials") NULL else page_title,
+    instruction_text = if(fun_name == "find_this_note_trials") NULL else instruction_text)
 
   # Remove empty arguments
   args <- args[!purrr::map_lgl(args, is.null)]
@@ -798,7 +854,11 @@ pbet_rhythmic_trials <- function(item_bank,
                                  rel_to_abs_mel_function,
                                  melody_block_paradigm = c('standard', 'sing_melody_first'),
                                  review = FALSE,
-                                 phase = c('test', 'learn', 'review')) {
+                                 phase = c('test', 'learn', 'review'),
+                                 learn_test_paradigm = FALSE,
+                                 page_text = psychTestR::i18n("rhythmic_melody_trial_page_text"),
+                                 page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
+                                 instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text")) {
 
 
   psychTestR::join(
@@ -820,7 +880,12 @@ pbet_rhythmic_trials <- function(item_bank,
                             rel_to_abs_mel_function = rel_to_abs_mel_function,
                             melody_block_paradigm = melody_block_paradigm,
                             review = review,
-                            phase = phase),
+                            phase = phase,
+                            singing_trials = FALSE,
+                            learn_test_paradigm = learn_test_paradigm,
+                            page_text = page_text,
+                            page_title = page_title,
+                            instruction_text = instruction_text),
 
     conditional_trial_block(page_type = "record_audio_page",
                             selection = "Microphone",
@@ -840,7 +905,12 @@ pbet_rhythmic_trials <- function(item_bank,
                             rel_to_abs_mel_function = rel_to_abs_mel_function,
                             melody_block_paradigm = melody_block_paradigm,
                             review = review,
-                            phase = phase)
+                            phase = phase,
+                            singing_trials = FALSE,
+                            learn_test_paradigm = learn_test_paradigm,
+                            page_text = page_text,
+                            page_title = page_title,
+                            instruction_text = instruction_text)
   )
 }
 
@@ -860,7 +930,11 @@ pbet_arrhythmic_trials <- function(item_bank,
                                    rel_to_abs_mel_function,
                                    melody_block_paradigm = c('standard', 'sing_melody_first'),
                                    review = FALSE,
-                                   phase = c('test', 'learn', 'review')) {
+                                   phase = c('test', 'learn', 'review'),
+                                   learn_test_paradigm = FALSE,
+                                   page_text = psychTestR::i18n("rhythmic_melody_trial_page_text"),
+                                   page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
+                                   instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text")) {
 
   stopifnot(is.function(get_answer_function_midi))
 
@@ -884,7 +958,12 @@ pbet_arrhythmic_trials <- function(item_bank,
                             rel_to_abs_mel_function = rel_to_abs_mel_function,
                             melody_block_paradigm = melody_block_paradigm,
                             review = review,
-                            phase = phase),
+                            phase = phase,
+                            singing_trials = FALSE,
+                            learn_test_paradigm = learn_test_paradigm,
+                            page_text = page_text,
+                            page_title = page_title,
+                            instruction_text = instruction_text),
 
     conditional_trial_block(page_type = "record_audio_page",
                             selection = "Microphone",
@@ -904,7 +983,12 @@ pbet_arrhythmic_trials <- function(item_bank,
                             rel_to_abs_mel_function = rel_to_abs_mel_function,
                             melody_block_paradigm = melody_block_paradigm,
                             review = review,
-                            phase = phase)
+                            phase = phase,
+                            singing_trials = FALSE,
+                            learn_test_paradigm = learn_test_paradigm,
+                            page_text = page_text,
+                            page_title = page_title,
+                            instruction_text = instruction_text)
   )
 }
 
@@ -1048,7 +1132,14 @@ main_test_paradigms <- function(module_label = "test",
                                 rel_to_abs_mel_function,
                                 melody_block_paradigm,
                                 review = FALSE,
-                                phase = c('test', 'learn', 'review')) {
+                                phase = c('test', 'learn', 'review'),
+                                learn_test_paradigm = FALSE,
+                                arrhythmic_page_text = psychTestR::i18n("arrhythmic_melody_trial_page_text"),
+                                arrhythmic_page_title = psychTestR::i18n("arrhythmic_melody_trial_page_title"),
+                                arrhythmic_instruction_text = psychTestR::i18n("arrhythmic_melody_trial_instruction_text"),
+                                rhythmic_page_text = psychTestR::i18n("rhythmic_melody_trial_page_text"),
+                                rhythmic_page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
+                                rhythmic_instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text")) {
 
   phase <- match.arg(phase)
 
@@ -1072,7 +1163,7 @@ main_test_paradigms <- function(module_label = "test",
   }
 
 
-  # Review supported for standard melody trials
+  # Review only supported for standard melody trials
   melody_based_trials <- psychTestR::join(
       # Arrhythmic melody trials
       pbet_arrhythmic_trials(arrhythmic_item_bank,
@@ -1091,7 +1182,11 @@ main_test_paradigms <- function(module_label = "test",
                              rel_to_abs_mel_function = rel_to_abs_mel_function,
                              melody_block_paradigm = melody_block_paradigm,
                              review = review,
-                             phase = phase),
+                             phase = phase,
+                             learn_test_paradigm = learn_test_paradigm,
+                             page_text = arrhythmic_page_text,
+                             page_title = arrhythmic_page_title,
+                             instruction_text = arrhythmic_instruction_text),
     # Rhythmic melody trials
     pbet_rhythmic_trials(rhythmic_item_bank,
                          num_items = num_items$rhythmic,
@@ -1109,27 +1204,27 @@ main_test_paradigms <- function(module_label = "test",
                          rel_to_abs_mel_function = rel_to_abs_mel_function,
                          melody_block_paradigm = melody_block_paradigm,
                          review = review,
-                         phase = phase)
+                         phase = phase,
+                         learn_test_paradigm = learn_test_paradigm,
+                         page_text = rhythmic_page_text,
+                         page_title = rhythmic_page_title,
+                         instruction_text = rhythmic_instruction_text)
 
   )
 
-
-  #if(review) browser()
 
   psychTestR::module(label = module_label,
-    psychTestR::join(
+      psychTestR::join(
 
-      # Non-melody-based trials
-      if (!review) non_melody_based_trials, # Review supported for standard melody trials
+        # Non-melody-based trials
+        if (!review) non_melody_based_trials, # Review only supported for standard melody trials
 
-      # Melody-based trials
-      melody_based_trials,
+        # Melody-based trials
+        melody_based_trials,
 
-      # WJD real audio trials
-      if (!review) musicassessr::wjd_audio_melody_trials(item_bank = PBET::WJD_phrase_item_bank, num_items = num_items$wjd_audio, num_examples = examples$wjd_audio, feedback = feedback)
-
-      )
-  )
+        # WJD real audio trials
+        if (!review) musicassessr::wjd_audio_melody_trials(item_bank = PBET::WJD_phrase_item_bank, num_items = num_items$wjd_audio, num_examples = examples$wjd_audio, feedback = feedback)
+  ))
 
 }
 

@@ -62,11 +62,20 @@ PBET(
   show_introduction = FALSE,
   num_items_review = list(arrhythmic = 0L, rhythmic = 0L),
   instrument_id = NULL,
+  user_id = NULL,
+  experiment_id = NULL,
+  present_continue_to_new_test_page = TRUE,
   ...
 )
 }
 \arguments{
 \item{instrument_id}{Set what instrument is being used a priori.}
+
+\item{user_id}{The user's ID, if using musicassessr_db and applicable.}
+
+\item{experiment_id}{The experiment ID, if using musicassessr_db and applicable.}
+
+\item{present_continue_to_new_test_page}{Should a "continue to test test" page be presented at the end of the PBET in a broader timeline?}
 }
 \description{
 Deploy the PBET
