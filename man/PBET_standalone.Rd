@@ -62,13 +62,24 @@ PBET_standalone(
   melody_block_paradigm = c("standard", "sing_melody_first",
     "learn_phase_visual_display_modality"),
   show_introduction = FALSE,
-  num_items_review = 0L,
+  num_items_review = list(arrhythmic = 0L, rhythmic = 0L),
   instrument_id = NULL,
+  user_id = NULL,
+  experiment_id = NULL,
+  present_continue_to_new_test_page = TRUE,
+  asynchronous_api_mode = FALSE,
+  left_margin = 1L,
+  right_margin = 1L,
+  css = system.file("www/css/musicassessr.css", package = "musicassessr"),
+  content_border = "solid 3px #bfd5d9",
+  full_screen = FALSE,
   ...
 )
 }
 \arguments{
 \item{instrument_id}{Set what instrument is being used a priori.}
+
+\item{full_screen}{}
 }
 \description{
 Deploy the PBET as a standalone test

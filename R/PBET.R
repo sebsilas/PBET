@@ -57,6 +57,15 @@
 #' @param show_introduction
 #' @param num_items_review
 #' @param instrument_id Set what instrument is being used a priori.
+#' @param user_id
+#' @param experiment_id
+#' @param present_continue_to_new_test_page
+#' @param asynchronous_api_mode
+#' @param left_margin
+#' @param right_margin
+#' @param css
+#' @param content_border
+#' @param full_screen
 #'
 #' @return
 #' @export
@@ -129,8 +138,18 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
                             default_singing_range = NULL,
                             melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
                             show_introduction = FALSE,
-                            num_items_review = 0L,
-                            instrument_id = NULL, ...) {
+                            num_items_review = list("arrhythmic" = 0L, "rhythmic" = 0L),
+                            instrument_id = NULL,
+                            user_id = NULL,
+                            experiment_id = NULL,
+                            present_continue_to_new_test_page = TRUE,
+                            asynchronous_api_mode = FALSE,
+                            left_margin = 1L,
+                            right_margin = 1L,
+                            css = system.file('www/css/musicassessr.css', package = "musicassessr"),
+                            content_border = "solid 3px #bfd5d9",
+                            full_screen = FALSE,
+                            ...) {
 
 
   timeline <- PBET(num_items,
@@ -185,27 +204,35 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
                    show_introduction,
                    num_items_review,
                    instrument_id,
+                   user_id,
+                   experiment_id,
+                   present_continue_to_new_test_page,
+                   asynchronous_api_mode,
                    ...)
 
 
   # Run the test
 
   timeline %>%
-    musicassessr::validate_user_entry_into_test(validate_user_entry_into_test, .) %>%
+    musicassessrdb::validate_user_entry_into_test(validate_user_entry_into_test, .) %>%
     psychTestR::make_test(
       elts = .,
       opt = psychTestR::test_options(title = test_name,
                                      admin_password = admin_password,
                                      display = psychTestR::display_options(
-                                      left_margin = 1L,
+                                       full_screen = full_screen,
+                                       left_margin = 1L,
                                        right_margin = 1L,
-                                       css = system.file('www/css/musicassessr.css', package = "musicassessr")
-                                      ),
+                                       css = css,
+                                       content_border = content_border
+                                     ),
                                        additional_scripts = musicassessr::musicassessr_js(musicassessr_aws = musicassessr_aws,
                                                                                           visual_notation = TRUE,
                                                                                           midi_input = TRUE,
                                                                                           app_name = app_name),
                                      languages = c("en"),
+                                     on_start_fun = if(use_musicassessr_db) musicassessrdb::musicassessr_shiny_init else NULL,
+                                     on_stop_fun =  if(use_musicassessr_db) musicassessrdb::musicassessr_shiny_on_stop else NULL,
                                      ...))
 }
 
@@ -269,6 +296,7 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
 #' @param user_id The user's ID, if using musicassessr_db and applicable.
 #' @param experiment_id The experiment ID, if using musicassessr_db and applicable.
 #' @param present_continue_to_new_test_page Should a "continue to test test" page be presented at the end of the PBET in a broader timeline?
+#' @param asynchronous_api_mode
 #' @return
 #' @export
 #'
@@ -339,7 +367,8 @@ PBET <- function(num_items = list(interval_perception = 0L,
                  instrument_id = NULL,
                  user_id = NULL,
                  experiment_id = NULL,
-                 present_continue_to_new_test_page = TRUE, ...) {
+                 present_continue_to_new_test_page = TRUE,
+                 asynchronous_api_mode = FALSE, ...) {
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
   input_type <- match.arg(input_type)
@@ -408,7 +437,9 @@ PBET <- function(num_items = list(interval_perception = 0L,
     setequal(names(num_items_review), c("arrhythmic", "rhythmic")) & is.integer(num_items_review$arrhythmic) & is.integer(num_items_review$rhythmic),
     is.null.or(instrument_id, is.integer),
     is.null.or(user_id, is.integer),
-    is.null.or(experiment_id, is.integer)
+    is.null.or(experiment_id, is.integer),
+    is.scalar.logical(present_continue_to_new_test_page),
+    is.scalar.logical(asynchronous_api_mode)
     )
 
   if(melody_block_paradigm == 'learn_phase_visual_display_modality' && give_first_melody_note) stop("give_first_melody_note must be FALSE if the melody_block_paradigm is learn_phase_visual_display_modality")
@@ -434,6 +465,13 @@ PBET <- function(num_items = list(interval_perception = 0L,
 
            psychTestR::new_timeline(
              psychTestR::join(
+
+               # Init musicassessr
+               musicassessr::musicassessr_init(use_musicassessr_db = use_musicassessr_db,
+                                               app_name = app_name,
+                                               experiment_id = experiment_id,
+                                               user_id = user_id,
+                                               asynchronous_api_mode = asynchronous_api_mode),
 
                            # Set test
                            if(use_musicassessr_db) musicassessr::set_test(test_name = "PBET", test_id = 2L),
@@ -461,7 +499,10 @@ PBET <- function(num_items = list(interval_perception = 0L,
                                                                 get_self_chosen_anonymous_id,
                                                                 adjust_range,
                                                                 input_type,
-                                                                instrument_id)
+                                                                instrument_id,
+                                                                asynchronous_api_mode,
+                                                                (num_items$arrhythmic + num_items$rhythmic),
+                                                                melody_length)
                              },
 
                            # Arbitrary and optional trial block to before main content
@@ -623,7 +664,11 @@ PBET_intro <- function(demo = FALSE,
                       get_self_chosen_anonymous_id = FALSE,
                       adjust_range = TRUE,
                       input_type = "midi_keyboard_or_microphone",
-                      instrument_id = NULL) {
+                      instrument_id = NULL,
+                      asynchronous_api_mode = FALSE,
+                      num_items = NULL, # Only needed for async API mode
+                      melody_length = NULL # Only needed for async API mode
+                      ) {
 
 
   psychTestR::join(
@@ -653,6 +698,9 @@ PBET_intro <- function(demo = FALSE,
                               get_self_chosen_anonymous_id = get_self_chosen_anonymous_id,
                               musical_instrument = TRUE,
                               adjust_range = adjust_range),
+
+    # Sample from item bank now we have range
+    if(asynchronous_api_mode) sample_melody_in_key_elts(item_bank_name = "WJD_ngram", num_items, key_difficulty, melody_length),
     # Instructions
     if(!skip_setup) PBET_instructions(max_goes, max_goes_forced)
   )

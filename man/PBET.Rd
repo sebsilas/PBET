@@ -65,6 +65,7 @@ PBET(
   user_id = NULL,
   experiment_id = NULL,
   present_continue_to_new_test_page = TRUE,
+  asynchronous_api_mode = FALSE,
   ...
 )
 }
