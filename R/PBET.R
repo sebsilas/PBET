@@ -713,7 +713,7 @@ PBET_intro <- function(demo = FALSE,
                               use_musicassessr_db = use_musicassessr_db),
 
     # Sample from item bank now we have range
-    if(asynchronous_api_mode) sample_melody_in_key_elts(item_bank_name = "WJD_ngram", num_items, key_difficulty, melody_length),
+    #if(asynchronous_api_mode) sample_melody_in_key_elts(item_bank_name = "WJD_ngram", num_items, key_difficulty, melody_length),
 
     # Instructions
     if(show_instructions) PBET_instructions(max_goes, max_goes_forced)
