@@ -59,13 +59,14 @@ PBET(
   default_singing_range = NULL,
   melody_block_paradigm = c("standard", "sing_melody_first",
     "learn_phase_visual_display_modality"),
-  show_introduction = FALSE,
+  show_introduction = TRUE,
   num_items_review = list(arrhythmic = 0L, rhythmic = 0L),
   instrument_id = NULL,
   user_id = NULL,
   experiment_id = NULL,
   present_continue_to_new_test_page = TRUE,
   asynchronous_api_mode = FALSE,
+  show_instructions = TRUE,
   ...
 )
 }
