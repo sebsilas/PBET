@@ -628,6 +628,9 @@ PBET <- function(num_items = list(interval_perception = 0L,
                            # Arbitrary and optional trial block to go after
                            append_trial_block_after,
 
+                           # Add final session information to DB (if use_musicassessr_db)
+                           if(use_musicassessr_db) musicassessrdb::elt_add_final_session_info_to_db(asynchronous_api_mode),
+
                            psychTestR::elt_save_results_to_disk(complete = FALSE), # the test really finishes later (see below)
 
                            if(final_results) final_results_pbet(
@@ -713,7 +716,7 @@ PBET_intro <- function(demo = FALSE,
                               use_musicassessr_db = use_musicassessr_db),
 
     # Sample from item bank now we have range
-    #if(asynchronous_api_mode) sample_melody_in_key_elts(item_bank_name = "WJD_ngram", num_items, key_difficulty, melody_length),
+    #if(asynchronous_api_mode) musicassessrdb::sample_from_item_bank_elts(item_bank_name = "WJD_ngram", num_items, key_difficulty, melody_length),
 
     # Instructions
     if(show_instructions) PBET_instructions(max_goes, max_goes_forced)
