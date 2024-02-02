@@ -81,7 +81,7 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
                                              wjd_audio = list("key_easy" = 5L,
                                                                 "key_hard" = 5L)),
                             melody_length = 5:18,
-                            arrhythmic_item_bank = PBET::WJD_ngram_minified, # this is correct, this is a version dispatched with PBET to avoid the WJD dependency
+                            arrhythmic_item_bank = PBET::WJD_phrase_item_bank, # this is correct, this is a version dispatched with PBET to avoid the WJD dependency
                             rhythmic_item_bank = PBET::WJD_phrase_item_bank, # this is correct, this is a version dispatched with PBET to avoid the WJD dependency
                             demographics = TRUE,
                             demo = FALSE,
@@ -311,7 +311,7 @@ PBET <- function(num_items = list(interval_perception = 0L,
                                   rhythmic = list(key_easy = 5L, key_hard = 5L),
                                   wjd_audio = list(key_easy = 0L, key_hard = 0L)),
                  melody_length = 5:18,
-                 arrhythmic_item_bank = PBET::WJD_ngram_minified,
+                 arrhythmic_item_bank = PBET::WJD_phrase_item_bank,
                  rhythmic_item_bank = PBET::WJD_phrase_item_bank,
                  demographics = TRUE,
                  demo = FALSE,
