@@ -432,7 +432,7 @@ PBET <- function(num_items = list(interval_perception = 0L,
     is.scalar.logical(add_consent_form),
     is.list(proportion_visual) & length(proportion_visual) == 2 & setequal(names(proportion_visual), c('test', 'learn')),
     is.null.or(default_range, function(x)   {
-      is.list(x) & length(x) == 2 & setequal(names(x), c('bottom_range', 'top_range'))
+      is.list(x) & length(x) == 3 & setequal(names(x), c('bottom_range', 'top_range', 'clef'))
       }),
     is.null.or(default_singing_range, function(x)   {
       is.list(x) & length(x) == 2 & setequal(names(x), c('bottom_range', 'top_range'))
@@ -489,7 +489,7 @@ PBET <- function(num_items = list(interval_perception = 0L,
                            musicassessr::set_instrument(instrument_id),
 
                            # Set default range
-                           if(!is.null(default_range)) musicassessr::set_instrument_range(bottom_range = default_range$bottom_range, top_range = default_range$top_range),
+                           if(!is.null(default_range)) musicassessr::set_instrument_range(bottom_range = default_range$bottom_range, top_range = default_range$top_range, clef = default_range$clef),
 
 
                            # Introduction, same for all (i.e., midi and audio)
@@ -732,14 +732,14 @@ PBET_instructions <- function(max_goes, max_goes_forced) {
     test_instructions2.1 <- "test_instructions_2.1.1"
   }
 
-  c(
+  psychTestR::join(
     psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$h2("Instructions"),
                                                        shiny::tags$p(psychTestR::i18n("test_instructions_1.1")),
                                                        shiny::tags$p(psychTestR::i18n("test_instructions_1.2"))),
                                 button_text = psychTestR::i18n("Next")),
 
     psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$h2("Instructions"),
-                                                       shiny::tags$p(paste0(psychTestR::i18n(test_instructions2.1), " ", max_goes, " ", psychTestR::i18n("test_instructions_2.1.2"))),
+                                                       shiny::tags$p(if(is.infinite(max_goes)) psychTestR::i18n("test_instructions_2.1.infinite") else paste0(psychTestR::i18n("test_instructions_2.1.1"), " ", max_goes, " ", psychTestR::i18n("test_instructions_2.1.2"))),
                                                        shiny::tags$p(psychTestR::i18n("test_instructions_2.2"))),
                                 button_text = psychTestR::i18n("Next")),
 
@@ -748,7 +748,7 @@ PBET_instructions <- function(max_goes, max_goes_forced) {
                                 button_text = psychTestR::i18n("Next")),
 
     psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$h2("Instructions"),
-                                                       shiny::tags$p("Make your notes clear when you play. Particularly, if playing a stringed instrument (e.g., cello, guitar), be careful that you do not leave a string ringing when you change note: the note detection algorithm will not work well otherwise.")),
+                                                       shiny::tags$p("Make your notes clear when you play. Particularly, if playing a stringed instrument (e.g., cello, guitar), be careful that you do not leave a string ringing when you change note: the note detection procedure will not work well otherwise.")),
                                 button_text = psychTestR::i18n("Next"))
   )
 

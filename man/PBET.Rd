@@ -9,7 +9,7 @@ PBET(
     list(key_easy = 5L, key_hard = 5L), rhythmic = list(key_easy = 5L, key_hard = 5L),
     wjd_audio = list(key_easy = 0L, key_hard = 0L)),
   melody_length = 5:18,
-  arrhythmic_item_bank = PBET::WJD_ngram_minified,
+  arrhythmic_item_bank = PBET::WJD_phrase_item_bank,
   rhythmic_item_bank = PBET::WJD_phrase_item_bank,
   demographics = TRUE,
   demo = FALSE,

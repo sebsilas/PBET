@@ -7,8 +7,9 @@
 #'
 #' @format A function containing different versions of the WJD data frame, returned with "main", "ngram", "phrases" and "files" keys
 #' @source \url{https://jazzomat.hfm-weimar.de/dbformat/dboverview.html}
-"WJD_ngram_minified"
+#"WJD_ngram_minified"
 
+# Take this out temporaily to lighten the package
 
 #' Weimar Jazz Database (WJD), phrase version
 #'
