@@ -18,7 +18,7 @@ PBET_standalone(
   SNR_test = TRUE,
   get_range = TRUE,
   absolute_url = character(),
-  examples = list(find_this_note = 2L, interval_perception = 2L, arrhythmic =
+  num_examples = list(find_this_note = 2L, interval_perception = 2L, arrhythmic =
     list(key_easy = 1L, key_hard = 1L), rhythmic = list(key_easy = 1L, key_hard = 1L),
     wjd_audio = 0L),
   final_results = FALSE,
@@ -57,7 +57,7 @@ PBET_standalone(
   rel_to_abs_mel_function = NULL,
   add_consent_form = FALSE,
   proportion_visual = list(learn = 0, test = 0),
-  default_range = NULL,
+  default_range = musicassessr::set_default_range("Piano"),
   default_singing_range = NULL,
   melody_block_paradigm = c("standard", "sing_melody_first",
     "learn_phase_visual_display_modality"),
@@ -74,13 +74,14 @@ PBET_standalone(
   content_border = "solid 3px #bfd5d9",
   full_screen = FALSE,
   show_instructions = TRUE,
+  presampled_item_bank = FALSE,
   ...
 )
 }
 \arguments{
 \item{instrument_id}{Set what instrument is being used a priori.}
 
-\item{show_instructions}{}
+\item{presampled_item_bank}{}
 }
 \description{
 Deploy the PBET as a standalone test

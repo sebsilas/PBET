@@ -18,7 +18,7 @@ PBET(
   SNR_test = TRUE,
   get_range = TRUE,
   absolute_url = character(),
-  examples = list(find_this_note = 2L, interval_perception = 2L, arrhythmic =
+  num_examples = list(find_this_note = 2L, interval_perception = 2L, arrhythmic =
     list(key_easy = 1L, key_hard = 1L), rhythmic = list(key_easy = 0L, key_hard = 0L),
     wjd_audio = list(key_easy = 0L, key_hard = 0L)),
   final_results = FALSE,
@@ -55,7 +55,7 @@ PBET(
   rel_to_abs_mel_function = NULL,
   add_consent_form = FALSE,
   proportion_visual = list(learn = 0, test = 0),
-  default_range = NULL,
+  default_range = musicassessr::set_default_range("Piano"),
   default_singing_range = NULL,
   melody_block_paradigm = c("standard", "sing_melody_first",
     "learn_phase_visual_display_modality"),
@@ -67,6 +67,7 @@ PBET(
   present_continue_to_new_test_page = TRUE,
   asynchronous_api_mode = FALSE,
   show_instructions = TRUE,
+  presampled_item_bank = FALSE,
   ...
 )
 }
