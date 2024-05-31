@@ -16,13 +16,11 @@
 #' @param absolute_url
 #' @param num_examples
 #' @param final_results
-#' @param musicassessr_aws
 #' @param item_characteristics_sampler_function
 #' @param get_trial_characteristics_function
 #' @param max_goes_forced
 #' @param max_goes
 #' @param test_username
-#' @param use_musicassessr_db
 #' @param get_answer_function_midi
 #' @param get_answer_function_audio
 #' @param give_first_melody_note
@@ -99,13 +97,11 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
                               "wjd_audio" = 0L
                             ),
                             final_results = FALSE,
-                            musicassessr_aws = FALSE,
                             item_characteristics_sampler_function = item_characteristics_sampler_pbet,
                             get_trial_characteristics_function = get_trial_characteristics_pbet,
                             max_goes_forced = FALSE,
                             max_goes = 4L,
                             test_username = character(),
-                            use_musicassessr_db = FALSE,
                             get_answer_function_midi = musicassessr::get_answer_midi_melodic_production,
                             get_answer_function_audio = musicassessr::get_answer_pyin_melodic_production,
                             give_first_melody_note = TRUE,
@@ -156,7 +152,13 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
                             ...) {
 
 
-  timeline <- PBET(num_items,
+  timeline <- psychTestR::join(
+
+              psychTestR::code_block(function(state, ...) {
+                psychTestR::set_global("standalone", TRUE)
+              }),
+
+              PBET(num_items,
                    melody_length,
                     arrhythmic_item_bank,
                     rhythmic_item_bank,
@@ -169,13 +171,11 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
                     absolute_url,
                     num_examples,
                     final_results,
-                    musicassessr_aws,
                     item_characteristics_sampler_function,
                     get_trial_characteristics_function,
                     max_goes_forced,
                     max_goes,
                     test_username,
-                    use_musicassessr_db,
                    get_answer_function_midi,
                    get_answer_function_audio,
                    give_first_melody_note,
@@ -215,6 +215,7 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
                    show_instructions,
                    presampled_item_bank,
                    ...)
+              )
 
 
   # Run the test
@@ -232,13 +233,11 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
                                        css = css,
                                        content_border = content_border
                                      ),
-                                       additional_scripts = musicassessr::musicassessr_js(musicassessr_aws = musicassessr_aws,
-                                                                                          visual_notation = TRUE,
+                                       additional_scripts = musicassessr::musicassessr_js(visual_notation = TRUE,
                                                                                           midi_input = TRUE,
                                                                                           app_name = app_name),
                                      languages = c("en"),
-                                     on_start_fun = if(use_musicassessr_db) musicassessrdb::musicassessr_shiny_init else NULL,
-                                     on_stop_fun =  if(use_musicassessr_db) musicassessrdb::musicassessr_shiny_on_stop else NULL,
+                                     on_stop_fun =  musicassessr::end_session(asynchronous_api_mode),
                                      ...))
 }
 
@@ -260,13 +259,11 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
 #' @param absolute_url
 #' @param num_examples
 #' @param final_results
-#' @param musicassessr_aws
 #' @param item_characteristics_sampler_function
 #' @param get_trial_characteristics_function
 #' @param max_goes_forced
 #' @param max_goes
 #' @param test_username
-#' @param use_musicassessr_db
 #' @param get_answer_function_midi
 #' @param get_answer_function_audio
 #' @param give_first_melody_note
@@ -299,8 +296,8 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
 #' @param show_introduction
 #' @param num_items_review
 #' @param instrument_id Set what instrument is being used a priori.
-#' @param user_id The user's ID, if using musicassessr_db and applicable.
-#' @param experiment_id The experiment ID, if using musicassessr_db and applicable.
+#' @param user_id The user's ID, if using asynchronous_api_mode and applicable.
+#' @param experiment_id The experiment ID, if using asynchronous_api_mode and applicable.
 #' @param present_continue_to_new_test_page Should a "continue to test test" page be presented at the end of the PBET in a broader timeline?
 #' @param asynchronous_api_mode
 #' @param show_instructions
@@ -332,13 +329,11 @@ PBET <- function(num_items = list(interval_perception = 0L,
                    "wjd_audio" = list("key_easy" = 0L, "key_hard" = 0L)
                   ),
                  final_results = FALSE,
-                 musicassessr_aws = FALSE,
                  item_characteristics_sampler_function = item_characteristics_sampler_pbet,
                  get_trial_characteristics_function = get_trial_characteristics_pbet,
                  max_goes_forced = FALSE,
                  max_goes = 4L,
                  test_username = character(),
-                 use_musicassessr_db = FALSE,
                  get_answer_function_midi = musicassessr::get_answer_midi_melodic_production,
                  get_answer_function_audio = musicassessr::get_answer_pyin_melodic_production,
                  give_first_melody_note = TRUE,
@@ -398,13 +393,11 @@ PBET <- function(num_items = list(interval_perception = 0L,
     is.character(absolute_url),
     is.list(num_examples) & length(num_examples) == 5,
     is.scalar.logical(final_results),
-    is.scalar.logical(musicassessr_aws),
     is.function(item_characteristics_sampler_function) | is.null(item_characteristics_sampler_function),
     is.function(get_trial_characteristics_function) | is.null(get_trial_characteristics_function),
     is.scalar.logical(max_goes_forced),
     is.integer(max_goes) | is.infinite(max_goes),
     is.character(test_username),
-    is.scalar.logical(use_musicassessr_db),
     is.function(get_answer_function_midi),
     is.function(get_answer_function_audio),
     is.numeric(num_items$interval_perception),
@@ -438,7 +431,7 @@ PBET <- function(num_items = list(interval_perception = 0L,
     is.list(proportion_visual) & length(proportion_visual) == 2 & setequal(names(proportion_visual), c('test', 'learn')),
     is.list(default_range) & length(default_range) == 3 & setequal(names(default_range), c('bottom_range', 'top_range', 'clef')),
     is.null.or(default_singing_range, function(x)   {
-      is.list(x) & length(x) == 2 & setequal(names(x), c('bottom_range', 'top_range'))
+      is.list(x) & length(x) == 3 & setequal(names(x), c('bottom_range', 'top_range', 'clef'))
     }),
     melody_block_paradigm %in% c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
     is.scalar.logical(show_introduction),
@@ -451,6 +444,7 @@ PBET <- function(num_items = list(interval_perception = 0L,
     is.scalar.logical(show_instructions),
     is.scalar.logical(presampled_item_bank)
     )
+
 
   if(melody_block_paradigm == 'learn_phase_visual_display_modality' && give_first_melody_note) {
     stop("give_first_melody_note must be FALSE if the melody_block_paradigm is learn_phase_visual_display_modality")
@@ -479,8 +473,7 @@ PBET <- function(num_items = list(interval_perception = 0L,
              psychTestR::join(
 
                # Init musicassessr
-               musicassessr::musicassessr_init(use_musicassessr_db = use_musicassessr_db,
-                                               app_name = app_name,
+               musicassessr::musicassessr_init(app_name = app_name,
                                                experiment_id = experiment_id,
                                                user_id = user_id,
                                                asynchronous_api_mode = asynchronous_api_mode,
@@ -490,7 +483,7 @@ PBET <- function(num_items = list(interval_perception = 0L,
                           if(input_type %in% c("microphone", "midi_keyboard")) musicassessr::set_response_type(input_type),
 
                            # Set test
-                           if(use_musicassessr_db) musicassessr::set_test(test_name = "PBET", test_id = 2L),
+                           if(asynchronous_api_mode) musicassessr::set_test(test_name = "PBET", test_id = 2L),
 
                            # Set instrument
                            musicassessr::set_instrument(instrument_id),
@@ -500,7 +493,6 @@ PBET <- function(num_items = list(interval_perception = 0L,
                                                                 SNR_test,
                                                                 get_range,
                                                                 absolute_url,
-                                                                musicassessr_aws,
                                                                 headphones_test,
                                                                 get_user_info,
                                                                 microphone_test,
@@ -516,8 +508,7 @@ PBET <- function(num_items = list(interval_perception = 0L,
                                                                 asynchronous_api_mode,
                                                                 (num_items$arrhythmic + num_items$rhythmic),
                                                                 melody_length,
-                                                                show_instructions,
-                                                                use_musicassessr_db)
+                                                                show_instructions)
                              },
 
                            # Arbitrary and optional trial block to before main content
@@ -636,8 +627,12 @@ PBET <- function(num_items = list(interval_perception = 0L,
                            # Arbitrary and optional trial block to go after
                            append_trial_block_after,
 
-                           # Add final session information to DB (if use_musicassessr_db)
-                           if(use_musicassessr_db) musicassessrdb::elt_add_final_session_info_to_db(asynchronous_api_mode),
+                           # Add final session information to DB (if asynchronous_api_mode and not standalone)
+                           if(asynchronous_api_mode) {
+                             psychTestR::conditional(function(state, ...) {
+                               ! is.null(psychTestR::get_global("standalone", state))
+                             }, logic = musicassessrdb::elt_add_final_session_info_to_db(asynchronous_api_mode))
+                            },
 
                            psychTestR::elt_save_results_to_disk(complete = FALSE), # the test really finishes later (see below)
 
@@ -675,7 +670,6 @@ PBET_intro <- function(demo = FALSE,
                       SNR_test = TRUE,
                       get_range = TRUE,
                       absolute_url,
-                      musicassessr_aws = FALSE,
                       headphones_test = TRUE,
                       get_user_info = TRUE,
                       microphone_test = TRUE,
@@ -691,8 +685,7 @@ PBET_intro <- function(demo = FALSE,
                       asynchronous_api_mode = FALSE,
                       num_items = NULL, # Only needed for async API mode
                       melody_length = NULL, # Only needed for async API mode
-                      show_instructions = TRUE,
-                      use_musicassessr_db = FALSE) {
+                      show_instructions = TRUE) {
 
   psychTestR::join(
 
@@ -721,7 +714,7 @@ PBET_intro <- function(demo = FALSE,
                               get_self_chosen_anonymous_id = get_self_chosen_anonymous_id,
                               musical_instrument = TRUE,
                               adjust_range = adjust_range,
-                              use_musicassessr_db = use_musicassessr_db),
+                              asynchronous_api_mode = asynchronous_api_mode),
 
     # Sample from item bank now we have range
     #if(asynchronous_api_mode) musicassessrdb::sample_from_item_bank_elts(item_bank_name = "WJD_ngram", num_items, key_difficulty, melody_length),
@@ -766,15 +759,9 @@ PBET_instructions <- function(max_goes, max_goes_forced) {
 
 get_trial_characteristics_pbet <- function(trial_df, trial_no) {
   # Given the trial number, return what info is needed for the sampler
-  trial_df %>% dplyr::filter(trial_no == !! trial_no)
+  trial_df %>%
+    dplyr::filter(trial_no == !! trial_no)
 }
-
-# tibble::tibble(trial_no = 1:2,
-#                melody_length = c(5:6),
-#                key_difficulty = c("easy", "hard"),
-#                display_modality = c("visual", "auditory")) %>%
-# get_trial_characteristics_pbet(trial_no = 2)
-
 
 
 #' Sampler for PBET
@@ -1034,6 +1021,7 @@ pbet_arrhythmic_trials <- function(item_bank,
 
 
   psychTestR::join(
+
     conditional_trial_block(page_type = "record_midi_page",
                             selection = "MIDI",
                             trial_block_function = musicassessr::arrhythmic_melody_trials,
@@ -1243,10 +1231,8 @@ main_test_paradigms <- function(module_label = "test",
 
   phase <- match.arg(phase)
 
-  stopifnot(
-            is.function(get_answer_function_midi),
-            phase %in% c('test', 'learn', 'review')
-            )
+  stopifnot(is.function(get_answer_function_midi),
+            phase %in% c('test', 'learn', 'review'))
 
   logging::loginfo("Instantiating PBET block with type %s", phase)
 
@@ -1269,6 +1255,7 @@ main_test_paradigms <- function(module_label = "test",
 
   # Review only supported for standard melody trials
   melody_based_trials <- psychTestR::join(
+
       # Arrhythmic melody trials
       pbet_arrhythmic_trials(arrhythmic_item_bank,
                              num_items = num_items$arrhythmic,
@@ -1293,6 +1280,7 @@ main_test_paradigms <- function(module_label = "test",
                              instruction_text = arrhythmic_instruction_text,
                              presampled_item_bank = presampled_item_bank,
                              asynchronous_api_mode = asynchronous_api_mode),
+
     # Rhythmic melody trials
     pbet_rhythmic_trials(rhythmic_item_bank,
                          num_items = num_items$rhythmic,

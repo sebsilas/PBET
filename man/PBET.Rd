@@ -22,13 +22,11 @@ PBET(
     list(key_easy = 1L, key_hard = 1L), rhythmic = list(key_easy = 0L, key_hard = 0L),
     wjd_audio = list(key_easy = 0L, key_hard = 0L)),
   final_results = FALSE,
-  musicassessr_aws = FALSE,
   item_characteristics_sampler_function = item_characteristics_sampler_pbet,
   get_trial_characteristics_function = get_trial_characteristics_pbet,
   max_goes_forced = FALSE,
   max_goes = 4L,
   test_username = character(),
-  use_musicassessr_db = FALSE,
   get_answer_function_midi = musicassessr::get_answer_midi_melodic_production,
   get_answer_function_audio = musicassessr::get_answer_pyin_melodic_production,
   give_first_melody_note = TRUE,
@@ -74,9 +72,9 @@ PBET(
 \arguments{
 \item{instrument_id}{Set what instrument is being used a priori.}
 
-\item{user_id}{The user's ID, if using musicassessr_db and applicable.}
+\item{user_id}{The user's ID, if using asynchronous_api_mode and applicable.}
 
-\item{experiment_id}{The experiment ID, if using musicassessr_db and applicable.}
+\item{experiment_id}{The experiment ID, if using asynchronous_api_mode and applicable.}
 
 \item{present_continue_to_new_test_page}{Should a "continue to test test" page be presented at the end of the PBET in a broader timeline?}
 }
