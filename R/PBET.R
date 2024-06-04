@@ -155,7 +155,7 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
   timeline <- psychTestR::join(
 
               psychTestR::code_block(function(state, ...) {
-                psychTestR::set_global("standalone", TRUE)
+                psychTestR::set_global("standalone", TRUE, state)
               }),
 
               PBET(num_items,
