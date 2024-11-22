@@ -551,7 +551,7 @@ PBET <- function(num_items = list(interval_perception = 0L,
                                                                          rhythmic_page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
                                                                          rhythmic_instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text"),
                                                                          asynchronous_api_mode = asynchronous_api_mode
-                                                                         ), dict = PBET_dict)},
+                                                                         ), dict = PBET::PBET_dict)},
 
 
                            if (learn_test_paradigm) musicassessr::filler_task(),
@@ -587,7 +587,7 @@ PBET <- function(num_items = list(interval_perception = 0L,
                                                    rhythmic_page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
                                                    rhythmic_instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text"),
                                                    presampled_item_bank = presampled_item_bank,
-                                                   asynchronous_api_mode = asynchronous_api_mode), dict = PBET_dict),
+                                                   asynchronous_api_mode = asynchronous_api_mode), dict = PBET::PBET_dict),
 
                              if (num_items_review$arrhythmic > 0L | num_items_review$rhythmic > 0L) {
                                psychTestR::new_timeline(
@@ -620,7 +620,7 @@ PBET <- function(num_items = list(interval_perception = 0L,
                                                      rhythmic_page_text = psychTestR::i18n("rhythmic_melody_trial_page_text"),
                                                      rhythmic_page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
                                                      rhythmic_instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text"),
-                                                     asynchronous_api_mode = asynchronous_api_mode), dict = PBET_dict) },
+                                                     asynchronous_api_mode = asynchronous_api_mode), dict = PBET::PBET_dict) },
 
           psychTestR::new_timeline(
                     psychTestR::join(
@@ -647,6 +647,7 @@ PBET <- function(num_items = list(interval_perception = 0L,
 
         ), dict = PBET::PBET_dict)
       ),
+
       psychTestR::elt_save_results_to_disk(complete = TRUE),
       if(gold_msi) psyquest::GMS(subscales = c("Musical Training")),
       musicassessr::deploy_demographics(demographics),
@@ -774,7 +775,6 @@ get_trial_characteristics_pbet <- function(trial_df, trial_no) {
 #' @examples
 item_characteristics_sampler_pbet <- function(pars = list("key_easy" = 5L,
                                                           "key_hard" = 5L,
-                                                          "melody_length" = 5:18,
                                                           "proportion_visual" = 0)
                                                           ) {
 
@@ -798,40 +798,22 @@ item_characteristics_sampler_pbet <- function(pars = list("key_easy" = 5L,
 
   logging::loginfo("Creating PBET block with %s items: %s auditory and %s visual", no_items, num_auditory, num_visual)
 
-
-  # What possible values are there?
-  no_of_Ns <- length(pars$melody_length)
-  # Given the no. of items, how many of each N will we need? Let's count..
-  idxes <- rep(1:no_of_Ns, ceiling(no_items/no_of_Ns))
-  count <- 1
-  N_list <- c()
-
-  while(count < no_items + 1) {
-    idx <- idxes[count]
-    N_list <- c(N_list, pars$melody_length[idx])
-    count <- count + 1
-  }
-
   if(no_items_key_easy == 999 || no_items_key_hard == 999) {
     key_difficulty_labels <- c(rep("easy", 500), rep("hard", 499))
   } else {
     key_difficulty_labels <- c(rep("easy", no_items_key_easy), rep("hard", no_items_key_hard))
   }
 
-  # Randomise the order
-  N_list <- sample(N_list)
   key_difficulty_labels <- sample(key_difficulty_labels)
 
-
   tibble::tibble(trial_no = 1:no_items,
-                 melody_length = N_list,
                  key_difficulty = key_difficulty_labels,
                  display_modality = display_modality_labels)
 }
 
-# t <- item_characteristics_sampler_pbet(list("key_easy" = Inf, "key_hard" = Inf, melody_length = 5:18, proportion_visual = 0))
+# t <- item_characteristics_sampler_pbet(list("key_easy" = Inf, "key_hard" = Inf, proportion_visual = 0))
 
-# item_characteristics_sampler_pbet(list("key_easy" = 1, "key_hard" = 1, melody_length = 5:18, proportion_visual = 0))
+# item_characteristics_sampler_pbet(list("key_easy" = 1, "key_hard" = 1, proportion_visual = 0))
 
 
 
@@ -1136,7 +1118,7 @@ final_results_pbet <- function(test_name = "PBET",
                                num_items_rhythmic = 0L,
                                socials = TRUE) {
 
-  c(
+  psychTestR::join(
     psychTestR::reactive_page(function(state, ...) {
 
       res <- as.list(psychTestR::get_results(state, complete = FALSE))

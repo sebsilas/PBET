@@ -12,3 +12,10 @@ PBET_dict_t <- as.data.frame(PBET_dict)
 
 usethis::use_data(PBET_dict, overwrite = TRUE)
 
+
+document()
+
+credentials::set_github_pat()
+
+install()
+
