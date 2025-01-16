@@ -50,7 +50,7 @@ PBET(
   sampler_function_arrhythmic = musicassessr::sample_arrhythmic,
   sampler_function_rhythmic = musicassessr::sample_rhythmic,
   learn_test_paradigm = FALSE,
-  rel_to_abs_mel_function = NULL,
+  rel_to_abs_mel_function = musicassessr::transpose_melody_to_easy_or_hard_key,
   add_consent_form = FALSE,
   proportion_visual = list(learn = 0, test = 0),
   default_range = musicassessr::set_default_range("Piano"),

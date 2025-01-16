@@ -52,7 +52,7 @@ PBET_standalone(
   test_name = "Play By Ear Test",
   validate_user_entry_into_test = FALSE,
   learn_test_paradigm = FALSE,
-  rel_to_abs_mel_function = NULL,
+  rel_to_abs_mel_function = musicassessr::transpose_melody_to_easy_or_hard_key,
   add_consent_form = FALSE,
   proportion_visual = list(learn = 0, test = 0),
   default_range = musicassessr::set_default_range("Piano"),
