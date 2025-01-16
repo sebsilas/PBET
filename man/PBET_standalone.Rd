@@ -50,7 +50,6 @@ PBET_standalone(
   sampler_function_arrhythmic = musicassessr::sample_arrhythmic,
   sampler_function_rhythmic = musicassessr::sample_rhythmic,
   test_name = "Play By Ear Test",
-  validate_user_entry_into_test = FALSE,
   learn_test_paradigm = FALSE,
   rel_to_abs_mel_function = musicassessr::transpose_melody_to_easy_or_hard_key,
   add_consent_form = FALSE,
@@ -73,13 +72,14 @@ PBET_standalone(
   full_screen = FALSE,
   show_instructions = TRUE,
   presampled_item_bank = FALSE,
+  mute_midi_playback = FALSE,
   ...
 )
 }
 \arguments{
 \item{instrument_id}{Set what instrument is being used a priori.}
 
-\item{presampled_item_bank}{}
+\item{mute_midi_playback}{}
 }
 \description{
 Deploy the PBET as a standalone test

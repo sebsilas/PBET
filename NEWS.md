@@ -1,5 +1,6 @@
 # PBET 2.1.0
 
+- Add `mute_midi_playback` arg
 
 # PBET 2.0
 

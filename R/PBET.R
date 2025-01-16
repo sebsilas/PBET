@@ -44,7 +44,6 @@
 #' @param sampler_function_arrhythmic
 #' @param sampler_function_rhythmic
 #' @param test_name
-#' @param validate_user_entry_into_test
 #' @param learn_test_paradigm
 #' @param rel_to_abs_mel_function
 #' @param add_consent_form
@@ -66,6 +65,7 @@
 #' @param full_screen
 #' @param show_instructions
 #' @param presampled_item_bank
+#' @param mute_midi_playback
 #'
 #' @return
 #' @export
@@ -127,7 +127,6 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
                             sampler_function_arrhythmic = musicassessr::sample_arrhythmic,
                             sampler_function_rhythmic = musicassessr::sample_rhythmic,
                             test_name = "Play By Ear Test",
-                            validate_user_entry_into_test = FALSE,
                             learn_test_paradigm = FALSE,
                             rel_to_abs_mel_function = musicassessr::transpose_melody_to_easy_or_hard_key,
                             add_consent_form = FALSE,
@@ -149,6 +148,7 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
                             full_screen = FALSE,
                             show_instructions = TRUE,
                             presampled_item_bank = FALSE,
+                            mute_midi_playback = FALSE,
                             ...) {
 
 
@@ -214,6 +214,7 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
                    asynchronous_api_mode,
                    show_instructions,
                    presampled_item_bank,
+                   mute_midi_playback,
                    ...)
               )
 
@@ -221,7 +222,6 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
   # Run the test
 
   timeline %>%
-    musicassessrdb::validate_user_entry_into_test(validate_user_entry_into_test, .) %>%
     psychTestR::make_test(
       elts = .,
       opt = psychTestR::test_options(title = test_name,
@@ -235,6 +235,7 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
                                      ),
                                        additional_scripts = musicassessr::musicassessr_js(visual_notation = TRUE,
                                                                                           midi_input = TRUE,
+                                                                                          record_audio = grepl("microphone", input_type),
                                                                                           app_name = app_name),
                                      languages = c("en"),
                                      on_stop_fun =  musicassessr::end_session(asynchronous_api_mode),
@@ -302,6 +303,7 @@ PBET_standalone <- function(num_items = list(interval_perception = 24L,
 #' @param asynchronous_api_mode
 #' @param show_instructions
 #' @param presampled_item_bank
+#' @param mute_midi_playback
 #' @return
 #' @export
 #'
@@ -373,7 +375,8 @@ PBET <- function(num_items = list(interval_perception = 0L,
                  present_continue_to_new_test_page = TRUE,
                  asynchronous_api_mode = FALSE,
                  show_instructions = TRUE,
-                 presampled_item_bank = FALSE, ...) {
+                 presampled_item_bank = FALSE,
+                 mute_midi_playback = FALSE, ...) {
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
   input_type <- match.arg(input_type)
@@ -442,7 +445,8 @@ PBET <- function(num_items = list(interval_perception = 0L,
     is.scalar.logical(present_continue_to_new_test_page),
     is.scalar.logical(asynchronous_api_mode),
     is.scalar.logical(show_instructions),
-    is.scalar.logical(presampled_item_bank)
+    is.scalar.logical(presampled_item_bank),
+    is.scalar.logical(mute_midi_playback)
     )
 
 
@@ -514,7 +518,7 @@ PBET <- function(num_items = list(interval_perception = 0L,
                            # Arbitrary and optional trial block to before main content
                            append_trial_block_before
 
-                           ), dict = PBET::PBET_dict), # End first timeline
+                           ), dict = musicassessr::musicassessr_dict ), # End first timeline
 
 
                            # Main test paradigms
@@ -550,8 +554,9 @@ PBET <- function(num_items = list(interval_perception = 0L,
                                                                          rhythmic_page_text = psychTestR::i18n("rhythmic_melody_trial_page_text"),
                                                                          rhythmic_page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
                                                                          rhythmic_instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text"),
-                                                                         asynchronous_api_mode = asynchronous_api_mode
-                                                                         ), dict = PBET::PBET_dict)},
+                                                                         asynchronous_api_mode = asynchronous_api_mode,
+                                                                         mute_midi_playback = mute_midi_playback
+                                                                         ), dict = musicassessr::musicassessr_dict )},
 
 
                            if (learn_test_paradigm) musicassessr::filler_task(),
@@ -587,7 +592,8 @@ PBET <- function(num_items = list(interval_perception = 0L,
                                                    rhythmic_page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
                                                    rhythmic_instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text"),
                                                    presampled_item_bank = presampled_item_bank,
-                                                   asynchronous_api_mode = asynchronous_api_mode), dict = PBET::PBET_dict),
+                                                   asynchronous_api_mode = asynchronous_api_mode,
+                                                   mute_midi_playback = mute_midi_playback), dict = musicassessr::musicassessr_dict ),
 
                              if (num_items_review$arrhythmic > 0L | num_items_review$rhythmic > 0L) {
                                psychTestR::new_timeline(
@@ -620,7 +626,8 @@ PBET <- function(num_items = list(interval_perception = 0L,
                                                      rhythmic_page_text = psychTestR::i18n("rhythmic_melody_trial_page_text"),
                                                      rhythmic_page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
                                                      rhythmic_instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text"),
-                                                     asynchronous_api_mode = asynchronous_api_mode), dict = PBET::PBET_dict) },
+                                                     asynchronous_api_mode = asynchronous_api_mode,
+                                                     mute_midi_playback = mute_midi_playback), dict = musicassessr::musicassessr_dict ) },
 
           psychTestR::new_timeline(
                     psychTestR::join(
@@ -645,7 +652,7 @@ PBET <- function(num_items = list(interval_perception = 0L,
                              show_socials
                            )
 
-        ), dict = PBET::PBET_dict)
+        ), dict = musicassessr::musicassessr_dict )
       ),
 
       psychTestR::elt_save_results_to_disk(complete = TRUE),
@@ -655,7 +662,7 @@ PBET <- function(num_items = list(interval_perception = 0L,
       psychTestR::new_timeline(
         musicassessr::final_page_or_continue_to_new_test(final = with_final_page,
                                                          task_name = psychTestR::i18n("title"),
-                                                         present_continue_to_new_test_page = present_continue_to_new_test_page), dict = PBET::PBET_dict)
+                                                         present_continue_to_new_test_page = present_continue_to_new_test_page), dict = musicassessr::musicassessr_dict )
   ) # end main join
 
   if(add_consent_form) {
@@ -843,7 +850,8 @@ conditional_trial_block <- function(page_type = c("record_midi_page", "record_au
                                     page_title = "",
                                     instruction_text = "",
                                     presampled_item_bank = FALSE,
-                                    asynchronous_api_mode = FALSE) {
+                                    asynchronous_api_mode = FALSE,
+                                    mute_midi_playback = FALSE) {
 
   fun_name <- as.character(substitute(trial_block_function))[3]
 
@@ -873,7 +881,8 @@ conditional_trial_block <- function(page_type = c("record_midi_page", "record_au
     page_title = if(fun_name == "find_this_note_trials") NULL else page_title,
     instruction_text = if(fun_name == "find_this_note_trials") NULL else instruction_text,
     presampled = if(fun_name == "find_this_note_trials") NULL else presampled_item_bank,
-    asynchronous_api_mode = if(fun_name == "find_this_note_trials") NULL else asynchronous_api_mode
+    asynchronous_api_mode = if(fun_name == "find_this_note_trials") NULL else asynchronous_api_mode,
+    mute_midi_playback = if(fun_name == "find_this_note_trials") NULL else mute_midi_playback
     )
 
   # Remove empty arguments
@@ -916,7 +925,8 @@ pbet_rhythmic_trials <- function(item_bank,
                                  page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
                                  instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text"),
                                  presampled_item_bank = FALSE,
-                                 asynchronous_api_mode = FALSE) {
+                                 asynchronous_api_mode = FALSE,
+                                 mute_midi_playback = FALSE) {
 
   psychTestR::join(
     conditional_trial_block(page_type = "record_midi_page",
@@ -944,7 +954,8 @@ pbet_rhythmic_trials <- function(item_bank,
                             page_title = page_title,
                             instruction_text = instruction_text,
                             presampled_item_bank = presampled_item_bank,
-                            asynchronous_api_mode = asynchronous_api_mode),
+                            asynchronous_api_mode = asynchronous_api_mode,
+                            mute_midi_playback = mute_midi_playback),
 
     conditional_trial_block(page_type = "record_audio_page",
                             selection = "Microphone",
@@ -971,7 +982,8 @@ pbet_rhythmic_trials <- function(item_bank,
                             page_title = page_title,
                             instruction_text = instruction_text,
                             presampled_item_bank = presampled_item_bank,
-                            asynchronous_api_mode = asynchronous_api_mode)
+                            asynchronous_api_mode = asynchronous_api_mode,
+                            mute_midi_playback = mute_midi_playback)
   )
 }
 
@@ -997,7 +1009,8 @@ pbet_arrhythmic_trials <- function(item_bank,
                                    page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
                                    instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text"),
                                    presampled_item_bank = FALSE,
-                                   asynchronous_api_mode = FALSE) {
+                                   asynchronous_api_mode = FALSE,
+                                   mute_midi_playback = FALSE) {
 
   stopifnot(is.function(get_answer_function_midi))
 
@@ -1029,7 +1042,8 @@ pbet_arrhythmic_trials <- function(item_bank,
                             page_title = page_title,
                             instruction_text = instruction_text,
                             presampled_item_bank = presampled_item_bank,
-                            asynchronous_api_mode = asynchronous_api_mode),
+                            asynchronous_api_mode = asynchronous_api_mode,
+                            mute_midi_playback = mute_midi_playback),
 
     conditional_trial_block(page_type = "record_audio_page",
                             selection = "Microphone",
@@ -1056,7 +1070,8 @@ pbet_arrhythmic_trials <- function(item_bank,
                             page_title = page_title,
                             instruction_text = instruction_text,
                             presampled_item_bank = presampled_item_bank,
-                            asynchronous_api_mode = asynchronous_api_mode)
+                            asynchronous_api_mode = asynchronous_api_mode,
+                            mute_midi_playback = mute_midi_playback)
   )
 }
 
@@ -1209,7 +1224,8 @@ main_test_paradigms <- function(module_label = "test",
                                 rhythmic_page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
                                 rhythmic_instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text"),
                                 presampled_item_bank = FALSE,
-                                asynchronous_api_mode = FALSE) {
+                                asynchronous_api_mode = FALSE,
+                                mute_midi_playback = FALSE) {
 
   phase <- match.arg(phase)
 
@@ -1261,7 +1277,8 @@ main_test_paradigms <- function(module_label = "test",
                              page_title = arrhythmic_page_title,
                              instruction_text = arrhythmic_instruction_text,
                              presampled_item_bank = presampled_item_bank,
-                             asynchronous_api_mode = asynchronous_api_mode),
+                             asynchronous_api_mode = asynchronous_api_mode,
+                             mute_midi_playback = mute_midi_playback),
 
     # Rhythmic melody trials
     pbet_rhythmic_trials(rhythmic_item_bank,
@@ -1286,7 +1303,8 @@ main_test_paradigms <- function(module_label = "test",
                          page_title = rhythmic_page_title,
                          instruction_text = rhythmic_instruction_text,
                          presampled_item_bank = presampled_item_bank,
-                         asynchronous_api_mode = asynchronous_api_mode)
+                         asynchronous_api_mode = asynchronous_api_mode,
+                         mute_midi_playback = mute_midi_playback)
 
   )
 

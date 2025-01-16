@@ -66,6 +66,7 @@ PBET(
   asynchronous_api_mode = FALSE,
   show_instructions = TRUE,
   presampled_item_bank = FALSE,
+  mute_midi_playback = FALSE,
   ...
 )
 }
